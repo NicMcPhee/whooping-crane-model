@@ -1,0 +1,33 @@
+{
+  "name": "whooping-crane-model",
+  "version": "0.0.0",
+  "main": "lib/whooping-crane-model.js",
+  "description": "Modeling management choices and outcomes for whooping crane nesting in Wisconsin.",
+  "homepage": "https://github.com/NicMcPhee/whooping-crane-model",
+  "bugs": "https://github.com/NicMcPhee/whooping-crane-model/issues",
+  "author": {
+    "name": "Nic McPhee",
+    "email": "mcphee@morris.umn.edu",
+    "url": "http://www.morris.umn.edu/~mcphee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NicMcPhee/whooping-crane-model"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "devDependencies": {
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-coffee": "~0.9.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-coffeelint": "~0.0.8",
+    "grunt-simple-mocha": "~0.4.0",
+    "should": "~3.1.2",
+    "matchdep": "~0.3.0",
+    "mocha-cakes": "~0.9.0",
+    "grunt": "~0.4.2"
+  }
+}
