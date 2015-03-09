@@ -8,17 +8,27 @@ class MGStripChart
   
   constructor: ->
     @createChart()
-    # @seed()
-    @tick()
+#    @tick()
     
   createChart: ->
-    @chart = c3.generate {
-      bindto: '#chart'
-      data:
-        x : 'Year'
-        xFormat : "%Y-%m"
-        columns: [
-          ['Year'].concat([2015...2015+100].map (y) -> "#{y}-01")
+    MG.data_graphic({
+      # title: "Cranes",
+      description: "This graphic shows a time-series of cranes.",
+      data: [{'date': '2014','value':12},
+             {'date': '2015','value':18}],
+      width: 600,
+      height: 250,
+      target: '#chart',
+      x_accessor: 'date',
+      y_accessor: 'value',
+    })
+#    @chart = c3.generate {
+#      bindto: '#chart'
+#      data:
+#        x : 'Year'
+#        xFormat : "%Y-%m"
+#        columns: [
+#          ['Year'].concat([2015...2015+100].map (y) -> "#{y}-01")
 #          ["Number of cranes (run #{@runNumber})"]
 #          ['Year', "#{@year}-01"]
 #          ["Number of cranes (run #{@runNumber})", @numCranes]
@@ -26,17 +36,14 @@ class MGStripChart
 #          ['Number of cranes', Math.random(), Math.random()]
 #          ['Year', '2014', '2015']
 #          ['Number of cranes', Math.random(), Math.random()]
-        ]
-      axis:
-        x:
-          type: 'timeseries'
-          tick:
-            format: '%Y'
-    }
-
-  seed: ->
-    @values = [Math.random()]
-    
+#        ]
+#      axis:
+#        x:
+#          type: 'timeseries'
+#          tick:
+#            format: '%Y'
+#    }
+   
   extendData: ->
     years = [@year...(@year+100)]
     offsets = years.map (x) -> Math.round(20*(Math.random()-0.65))
