@@ -1,4 +1,4 @@
-class C3StripChart
+class MGStripChart
   tickLength: 0
   values: null
   chart: null
@@ -65,4 +65,4 @@ class C3StripChart
     @extendData()
     setTimeout @tick, @tickLength
 
-window.C3StripChart = C3StripChart
+window.MGStripChart = MGStripChart
