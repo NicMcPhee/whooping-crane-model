@@ -1,75 +1,47 @@
 class MGStripChart
-  tickLength: 0
+  tickLength: 2000
   values: null
-  chart: null
   year: 2015
   numCranes: 400
+  numYears: 100
   runNumber: 0
   
   constructor: ->
-    @createChart()
-#    @tick()
+    @values = []
+    @tick()
     
-  createChart: ->
+  drawChart: ->
     MG.data_graphic({
-      # title: "Cranes",
-      description: "This graphic shows a time-series of cranes.",
-      data: [{'date': '2014','value':12},
-             {'date': '2015','value':18}],
-      width: 600,
-      height: 250,
-      target: '#chart',
-      x_accessor: 'date',
-      y_accessor: 'value',
+      # title: "Cranes"
+      chart_type: "line"
+      area: false
+      description: "This graphic shows a time-series of cranes."
+      data: @values
+      min_x: @year
+      max_x: @year + @numYears
+      baselines: [{value: 0, label: 'Extinction'}]
+      width: 600
+      height: 250
+      target: '#chart'
+      x_accessor: 'Year'
+      y_accessor: 'Number of cranes'
     })
-#    @chart = c3.generate {
-#      bindto: '#chart'
-#      data:
-#        x : 'Year'
-#        xFormat : "%Y-%m"
-#        columns: [
-#          ['Year'].concat([2015...2015+100].map (y) -> "#{y}-01")
-#          ["Number of cranes (run #{@runNumber})"]
-#          ['Year', "#{@year}-01"]
-#          ["Number of cranes (run #{@runNumber})", @numCranes]
-#          ['Year', "#{@year-1}-01", "#{@year}-01"]
-#          ['Number of cranes', Math.random(), Math.random()]
-#          ['Year', '2014', '2015']
-#          ['Number of cranes', Math.random(), Math.random()]
-#        ]
-#      axis:
-#        x:
-#          type: 'timeseries'
-#          tick:
-#            format: '%Y'
-#    }
    
   extendData: ->
-    years = [@year...(@year+100)]
+    years = [@year...(@year+@numYears)]
     offsets = years.map (x) -> Math.round(20*(Math.random()-0.65))
-    start = 400
+    start = @numCranes
     newVals = offsets.reduce ((l, r) -> l.concat([l[l.length-1]+r])), [start]
-#    @year = @year + 1
-#    if @year > 2115
-#      @year = 2015
-#      @runNumber = @runNumber + 1
-#      @numCranes = 400
-#    else
-#      offset = 10*(Math.random()-0.6)
-#      @numCranes = @numCranes + offset
-    @chart.flow {
-      columns: [
-        ['Year'].concat(years.map (y) -> "#{y}-01")
-        ["Number of cranes (run #{@runNumber})"].concat(newVals)
-#        ['Year', "#{@year}-01"]
-#        ["Number of cranes (run #{@runNumber})", @numCranes]
-      ]
-      length: 0
-    }
-    @runNumber = @runNumber + 1
+    #console.log(JSON.stringify(newVals))
+    newData = newVals.map (v, i) => { 'Year': @year+i, 'Number of cranes': v }
+    #console.log(JSON.stringify(newData))
+    @values.push(newData)
   
   tick: =>
     @extendData()
-    setTimeout @tick, @tickLength
+    console.log(JSON.stringify(@values))
+    @drawChart()
+    @runNumber = @runNumber + 1
+    setTimeout(@tick, @tickLength)
 
 window.MGStripChart = MGStripChart
