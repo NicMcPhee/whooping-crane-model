@@ -31,13 +31,13 @@ class RickshawStripChart
     start = @numCranes
     newVals = offsets.reduce ((l, r) -> l.concat([l[l.length-1]+r])), [start]
     newData = newVals.map (v, i) => { x: @year+i, y: v }
-    @values.push({color: 'red', data: newData})
+    @values.push({color: "rgba(0, 0, 0, 0.1)", data: newData})
 
   tick: =>
     @extendData()
     @drawChart()
     @runNumber = @runNumber + 1
     console.log("Run number #{@runNumber}")
-    setTimeout(@tick, @tickLength)
+    setTimeout(@tick, @tickLength) if @runNumber < 250
 
 window.RickshawStripChart = RickshawStripChart
