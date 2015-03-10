@@ -29,7 +29,10 @@ class RickshawStripChart
     years = [@year...(@year+@numYears)]
     offsets = years.map (x) -> Math.round(20*(Math.random()-0.65))
     start = @numCranes
-    newVals = offsets.reduce ((l, r) -> l.concat([l[l.length-1]+r])), [start]
+    newVals = offsets.reduce ((l, r) -> l.concat([Math.max(0, l[l.length-1]+r)])), [start]
+    firstZero = newVals.indexOf(0)
+    if firstZero > -1
+      newVals = newVals[..firstZero]
     newData = newVals.map (v, i) => { x: @year+i, y: v }
     @values.push({color: "rgba(0, 0, 0, 0.1)", data: newData})
 
