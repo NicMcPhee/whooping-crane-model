@@ -6,7 +6,6 @@ class RickshawStripChart
   numYears: 100
   runNumber: 0
   chart: null
-  hoverDetail: null
   
   constructor: ->
     @values = []
@@ -22,7 +21,13 @@ class RickshawStripChart
       series: @values
       min: 'auto'
     })
-    @hoverDetail = new Rickshaw.Graph.HoverDetail({
+    xAxis = new Rickshaw.Graph.Axis.X({
+      graph: @chart
+    })
+    yAxis = new Rickshaw.Graph.Axis.Y({
+      graph: @chart
+    })
+    hoverDetail = new Rickshaw.Graph.HoverDetail({
       graph: @chart
       xFormatter: (year) -> "Year #{year}"
       yFormatter: (numCranes) -> "#{Math.round(numCranes)} cranes"
@@ -33,7 +38,7 @@ class RickshawStripChart
    
   extendData: ->
     years = [@year...(@year+@numYears)]
-    offsets = years.map (x) -> Math.round(20*(Math.random()-0.65))
+    offsets = years.map (x) -> Math.round(20*(Math.random()-0.5))
     start = @numCranes
     newVals = offsets.reduce ((l, r) -> l.concat([Math.max(0, l[l.length-1]+r)])), [start]
     firstZero = newVals.indexOf(0)
@@ -50,6 +55,6 @@ class RickshawStripChart
     @drawChart()
     @runNumber = @runNumber + 1
     console.log("Run number #{@runNumber}")
-    setTimeout(@tick, @tickLength) if @runNumber < 250
+    setTimeout(@tick, @tickLength) if @runNumber < 100
 
 window.RickshawStripChart = RickshawStripChart
