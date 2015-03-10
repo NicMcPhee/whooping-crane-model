@@ -6,6 +6,7 @@ class RickshawStripChart
   numYears: 100
   runNumber: 0
   chart: null
+  hoverDetail: null
   
   constructor: ->
     @values = []
@@ -21,6 +22,11 @@ class RickshawStripChart
       series: @values
       min: 'auto'
     })
+    @hoverDetail = new Rickshaw.Graph.HoverDetail({
+      graph: @chart
+      xFormatter: (year) -> "Year #{year}"
+      yFormatter: (numCranes) -> "#{Math.round(numCranes)} cranes"
+    })
   
   drawChart: ->
     @chart.render()
@@ -34,7 +40,10 @@ class RickshawStripChart
     if firstZero > -1
       newVals = newVals[..firstZero]
     newData = newVals.map (v, i) => { x: @year+i, y: v }
-    @values.push({color: "rgba(0, 0, 0, 0.1)", data: newData})
+    @values.push({
+      name: "Run ##{@runNumber}"
+      color: "rgba(0, 0, 0, 0.1)"
+      data: newData})
 
   tick: =>
     @extendData()
