@@ -16,17 +16,44 @@ class RickshawStripChart
   buildChart: ->
     @chart = new Rickshaw.Graph({
       element: document.getElementById('chart')
-      width: 960
-      height: 500
+      width: 800
+      height: 300
       renderer: 'line'
       series: @values
-      min: 'auto'
+      min: -50 # 'auto'
     })
     @hoverDetail = new Rickshaw.Graph.HoverDetail({
       graph: @chart
       xFormatter: (year) -> "Year #{year}"
       yFormatter: (numCranes) -> "#{Math.round(numCranes)} cranes"
     })
+    x_axis = new Rickshaw.Graph.Axis.X({
+      graph: @chart
+    })
+    y_axis = new Rickshaw.Graph.Axis.Y({
+      graph: @chart
+    })
+#    @chart.render()
+#    label = d3.select("svg.y_axis")
+#                .attr("width", "5em") # make svg wide enough for label
+#                .append("svg:text")
+#                .attr("class", "y label")
+#                .style("text-anchor", "end")
+#                .attr("x", -150)
+#               .attr("y", 6)
+#                .attr("dy", ".75em")
+#                .attr("transform", "rotate(-90)")
+#                .text("Label text")
+#    label = d3.select("svg.y_axis")
+#      .attr("width", "5em")
+#      .append("svg:text")
+#      .attr("class", "y label")
+#      .style("text-anchor", "end")
+#      .attr("x", -150)
+#      .attr("y", 6)
+#      .attr("dy", ".75em")
+#      .attr("transform", "rotate(-90)")
+#      .text("lsdkjfslkdjf")
   
   drawChart: ->
     @chart.render()
@@ -50,6 +77,6 @@ class RickshawStripChart
     @drawChart()
     @runNumber = @runNumber + 1
     console.log("Run number #{@runNumber}")
-    setTimeout(@tick, @tickLength) if @runNumber < 250
+    setTimeout(@tick, @tickLength) if @runNumber < 50
 
 window.RickshawStripChart = RickshawStripChart
