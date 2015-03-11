@@ -3,6 +3,7 @@ class RickshawStripChart
   values: null
   year: 2015
   initialNumCranes: null
+  carryingCapacity: 1000
   numCranes: null
   percentageEggsToTake: null
   captiveEggSurvival: null
@@ -65,16 +66,24 @@ class RickshawStripChart
   
   drawChart: ->
     @chart.render()
+    
+  jiggle: (v) ->
+    newV = v + 0.1 * v * (Math.random() * 2 - 1)
+    newV = 0 if newV < 0
+    newV = 1 if newV > 1
+    return(newV)
    
   updatePopulation: (year) ->
     numPairs = @numCranes / 2
     numEggs = numPairs * @clutchSize
-    captive_babies = numEggs * @percentageEggsToTake * @captiveEggSurvival
+    captive_babies = numEggs * @percentageEggsToTake * @jiggle(@captiveEggSurvival)
     #console.log(captive_babies)
-    wild_babies = numEggs * (1-@percentageEggsToTake) * @wildEggSurvival
-    @numCranes = @numCranes * (1-@overallMortalityRate) + captive_babies + wild_babies
+    wild_babies = numEggs * (1-@percentageEggsToTake) * @jiggle(@wildEggSurvival)
+    @numCranes = @numCranes * (1-@jiggle(@overallMortalityRate)) + captive_babies + wild_babies
     if @numCranes <= 0
       @numCranes = 0
+    if @numCranes > @carryingCapacity
+      @numCranes = @carryingCapacity
     # console.log(@numCranes)
     return(@numCranes)
 
@@ -95,7 +104,7 @@ class RickshawStripChart
     @extendData()
     @drawChart()
     @runNumber = @runNumber + 1
-    @notDone = @runNumber < 5
+    @notDone = @runNumber < 100
     console.log("Run number #{@runNumber}")
     setTimeout(@tick, @tickLength) if @isRunning and @notDone
 
