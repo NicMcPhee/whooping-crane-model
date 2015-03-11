@@ -10,6 +10,7 @@ class RickshawStripChart
   offset_param: null
   isRunning: false
   hasStarted: false
+  notDone: true
   
   constructor: ->
     @values = []
@@ -21,8 +22,11 @@ class RickshawStripChart
     @isRunning = not @isRunning
     if not @hasStarted
       @start()
-    if @isRunning
+    if @isRunning and @notDone
+      $("#start_button").text("Stop")
       @tick()
+    else
+      $("#start_button").text("Start")
   
   start: ->
     @numCranes = Number($("#num_cranes").val())
@@ -74,7 +78,8 @@ class RickshawStripChart
     @extendData()
     @drawChart()
     @runNumber = @runNumber + 1
+    @notDone = @runNumber < 100
     console.log("Run number #{@runNumber}")
-    setTimeout(@tick, @tickLength) if @isRunning and @runNumber < 100
+    setTimeout(@tick, @tickLength) if @isRunning and @notDone
 
 window.RickshawStripChart = RickshawStripChart
