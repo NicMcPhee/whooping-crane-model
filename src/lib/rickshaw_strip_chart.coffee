@@ -1,5 +1,5 @@
 class RickshawStripChart
-  tickLength: 10
+  tickLength: 100
   values: null
   year: 2015
   numCranes: 400
@@ -7,6 +7,7 @@ class RickshawStripChart
   runNumber: 0
   chart: null
   hoverDetail: null
+  offset_param: 0.5
   
   constructor: ->
     @values = []
@@ -33,34 +34,17 @@ class RickshawStripChart
     y_axis = new Rickshaw.Graph.Axis.Y({
       graph: @chart
     })
-#    @chart.render()
-#    label = d3.select("svg.y_axis")
-#                .attr("width", "5em") # make svg wide enough for label
-#                .append("svg:text")
-#                .attr("class", "y label")
-#                .style("text-anchor", "end")
-#                .attr("x", -150)
-#               .attr("y", 6)
-#                .attr("dy", ".75em")
-#                .attr("transform", "rotate(-90)")
-#                .text("Label text")
-#    label = d3.select("svg.y_axis")
-#      .attr("width", "5em")
-#      .append("svg:text")
-#      .attr("class", "y label")
-#      .style("text-anchor", "end")
-#      .attr("x", -150)
-#      .attr("y", 6)
-#      .attr("dy", ".75em")
-#      .attr("transform", "rotate(-90)")
-#      .text("lsdkjfslkdjf")
   
   drawChart: ->
     @chart.render()
+    @readField()
    
+  readField: ->
+    @offset_param = Number($( "#input_box" ).val())
+
   extendData: ->
     years = [@year...(@year+@numYears)]
-    offsets = years.map (x) -> Math.round(20*(Math.random()-0.65))
+    offsets = years.map (x) => Math.round(20*(Math.random() - @offset_param))
     start = @numCranes
     newVals = offsets.reduce ((l, r) -> l.concat([Math.max(0, l[l.length-1]+r)])), [start]
     firstZero = newVals.indexOf(0)
