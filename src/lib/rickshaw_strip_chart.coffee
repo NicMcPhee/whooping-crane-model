@@ -2,7 +2,12 @@ class RickshawStripChart
   tickLength: 10
   values: null
   year: 2015
+  initialNumCranes: null
   numCranes: null
+  percentageEggsToTake: null
+  captiveEggSurvival: null
+  wildEggSurvival: null
+  overallMortalityRate: null
   numYears: 100
   runNumber: 0
   chart: null
@@ -29,7 +34,11 @@ class RickshawStripChart
       $("#start_button").text("Start")
   
   start: ->
-    @numCranes = Number($("#num_cranes").val())
+    @initialNumCranes = Number($("#num_cranes").val())
+    @percentageEggsToTake = Number($("#percentage_eggs_to_take").val())
+    @captiveEggSurvival = Number($('#captive_egg_survival').val())
+    @wildEggSurvival = Number($('#wild_egg_survival').val())
+    @overallMortalityRate = Number($('#overall_mortality_rate').val())
     hasStarted = true
   
   buildChart: ->
@@ -59,15 +68,20 @@ class RickshawStripChart
   readField: ->
     @offset_param = Number($( "#input_box" ).val())
 
+  updatePopulation: (year) ->
+    @numCranes = @numCranes + 20*(Math.random() - @offset_param)
+    if @numCranes <= 0
+      @numCranes = 0
+    return(@numCranes)
+
   extendData: ->
     years = [@year...(@year+@numYears)]
-    offsets = years.map (x) => Math.round(20*(Math.random() - @offset_param))
-    start = @numCranes
-    newVals = offsets.reduce ((l, r) -> l.concat([Math.max(0, l[l.length-1]+r)])), [start]
-    firstZero = newVals.indexOf(0)
+    @numCranes = @initialNumCranes
+    counts = years.map ((yr) => @updatePopulation(yr))
+    firstZero = counts.indexOf(0)
     if firstZero > -1
-      newVals = newVals[..firstZero]
-    newData = newVals.map (v, i) => { x: @year+i, y: v }
+      counts = counts[..firstZero]
+    newData = counts.map (v, i) => { x: @year+i, y: v }
     @values.push({
       name: "Run ##{@runNumber}"
       color: "rgba(0, 0, 0, 0.1)"
