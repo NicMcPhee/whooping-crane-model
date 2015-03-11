@@ -1,18 +1,32 @@
 class RickshawStripChart
-  tickLength: 100
+  tickLength: 10
   values: null
   year: 2015
-  numCranes: 400
+  numCranes: null
   numYears: 100
   runNumber: 0
   chart: null
   hoverDetail: null
-  offset_param: 0.5
+  offset_param: null
+  isRunning: false
+  hasStarted: false
   
   constructor: ->
     @values = []
     @buildChart()
-    @tick()
+    $("#start_button").click =>
+      @toggle_running()
+  
+  toggle_running: ->
+    @isRunning = not @isRunning
+    if not @hasStarted
+      @start()
+    if @isRunning
+      @tick()
+  
+  start: ->
+    @numCranes = Number($("#num_cranes").val())
+    hasStarted = true
   
   buildChart: ->
     @chart = new Rickshaw.Graph({
@@ -37,7 +51,6 @@ class RickshawStripChart
   
   drawChart: ->
     @chart.render()
-    @readField()
    
   readField: ->
     @offset_param = Number($( "#input_box" ).val())
@@ -57,10 +70,11 @@ class RickshawStripChart
       data: newData})
 
   tick: =>
+    @readField()
     @extendData()
     @drawChart()
     @runNumber = @runNumber + 1
     console.log("Run number #{@runNumber}")
-    setTimeout(@tick, @tickLength) if @runNumber < 50
+    setTimeout(@tick, @tickLength) if @isRunning and @runNumber < 100
 
 window.RickshawStripChart = RickshawStripChart
