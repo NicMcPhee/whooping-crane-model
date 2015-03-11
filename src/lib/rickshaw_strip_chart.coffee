@@ -8,6 +8,7 @@ class RickshawStripChart
   captiveEggSurvival: null
   wildEggSurvival: null
   overallMortalityRate: null
+  clutchSize: 2
   numYears: 100
   runNumber: 0
   chart: null
@@ -65,13 +66,16 @@ class RickshawStripChart
   drawChart: ->
     @chart.render()
    
-  readField: ->
-    @offset_param = Number($( "#input_box" ).val())
-
   updatePopulation: (year) ->
-    @numCranes = @numCranes + 20*(Math.random() - @offset_param)
+    numPairs = @numCranes / 2
+    numEggs = numPairs * @clutchSize
+    captive_babies = numEggs * @percentageEggsToTake * @captiveEggSurvival
+    #console.log(captive_babies)
+    wild_babies = numEggs * (1-@percentageEggsToTake) * @wildEggSurvival
+    @numCranes = @numCranes * (1-@overallMortalityRate) + captive_babies + wild_babies
     if @numCranes <= 0
       @numCranes = 0
+    # console.log(@numCranes)
     return(@numCranes)
 
   extendData: ->
@@ -88,11 +92,10 @@ class RickshawStripChart
       data: newData})
 
   tick: =>
-    @readField()
     @extendData()
     @drawChart()
     @runNumber = @runNumber + 1
-    @notDone = @runNumber < 100
+    @notDone = @runNumber < 5
     console.log("Run number #{@runNumber}")
     setTimeout(@tick, @tickLength) if @isRunning and @notDone
 
