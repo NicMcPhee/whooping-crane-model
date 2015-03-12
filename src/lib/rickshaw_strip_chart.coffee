@@ -41,7 +41,10 @@ class RickshawStripChart
     @captiveEggSurvival = Number($('#captive_egg_survival').val())
     @wildEggSurvival = Number($('#wild_egg_survival').val())
     @overallMortalityRate = Number($('#overall_mortality_rate').val())
-    hasStarted = true
+    @values.length = 0
+    @runNumber = 0
+    @hasStarted = true
+    @notDone = true
   
   buildChart: ->
     @chart = new Rickshaw.Graph({
@@ -105,7 +108,11 @@ class RickshawStripChart
     @drawChart()
     @runNumber = @runNumber + 1
     @notDone = @runNumber < 100
-    console.log("Run number #{@runNumber}")
+    if not @notDone
+      @isRunning = false
+      @hasStarted = false
+      $("#start_button").text("Restart")
+    console.log("Run number #{@runNumber}, len vals = #{@values.length}")
     setTimeout(@tick, @tickLength) if @isRunning and @notDone
 
 window.RickshawStripChart = RickshawStripChart
