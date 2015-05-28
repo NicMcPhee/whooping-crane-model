@@ -145,7 +145,6 @@ Feature "Populations",
 
           Given "I construct a population of #{numBirds} birds", ->
             Clock.reset()
-            console.log(Clock.currentYear)
             population = new Population(numBirds)
           When "I pair unpaired birds", ->
             population.mateUnpairedBirds()
