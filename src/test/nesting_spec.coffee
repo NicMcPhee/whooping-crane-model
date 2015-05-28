@@ -111,29 +111,31 @@ Feature "Nesting",
       "I need to be able to model nest abandonment", ->
 
         Scenario "Abandoment for fixed collection of nests", ->
-          numBlackflyNests = 37
-          numPostBlackflyNests = 18
-          totalNests = numBlackflyNests + numPostBlackflyNests
-          singleBlackflyNest = new Nest([])
-          singleBlackflyNest.isBlackFly = true
-          singlePostBlackflyNest = new Nest([])
-          singlePostBlackflyNest.isBlackFly = false
-          blackflyNests = null
-          postBlackflyNests = null
+          numEarlyNests = 37
+          numLateNests = 18
+          totalNests = numEarlyNests + numLateNests
+          bird = new Bird()
+          singleEarlyNest = new Nest([bird, bird])
+          singleEarlyNest._nestingTime = Bird.EARLY
+          singleLateNest = new Nest([bird, bird])
+          singleLateNest._nestingTime = Bird.LATE
+          earlyNests = null
+          lateNests = null
           nesting = null
 
-          Given "I construct #{numBlackflyNests} blackfly nests", ->
-            blackflyNests = (singleBlackflyNest for [0...numBlackflyNests])
-          And "I construct #{numPostBlackflyNests} post-blackfly nests", ->
-            postBlackflyNests = (singlePostBlackflyNest for [0...numPostBlackflyNests])
+          Given "I construct #{numEarlyNests} early nests", ->
+            earlyNests = (singleEarlyNest for [0...numEarlyNests])
+          And "I construct #{numLateNests} late nests", ->
+            lateNests = (singleLateNest for [0...numLateNests])
           And "I set the nesting to be those nests", ->
             nesting = new Nesting([])
-            nesting._activeNests = blackflyNests.concat(postBlackflyNests)
+            nesting._activeNests = earlyNests.concat(lateNests)
           Then "Total number of nests should be #{totalNests}", ->
             nesting.activeNests().length.should.eql totalNests
+            console.log(n.nestingTime() for n in nesting.activeNests())
           When "Birds abandon their nests", ->
             nesting.abandonNests()
-          Then "I should have #{numBlackflyNests} abandoned nests", ->
-            nesting.abandonedNests().length.should.eql numBlackflyNests
-          And "I should have #{numPostBlackflyNests} active nests", ->
-            nesting.activeNests().length.should.eql numPostBlackflyNests
+          Then "I should have #{numEarlyNests} abandoned nests", ->
+            nesting.abandonedNests().length.should.eql numEarlyNests
+          And "I should have #{numLateNests} active nests", ->
+            nesting.activeNests().length.should.eql numLateNests

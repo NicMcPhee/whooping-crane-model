@@ -26,7 +26,7 @@ class Nesting
   abandonedNests: () -> @_abandonedNests
 
   abandonNests: () ->
-    @_abandonedNests = @_activeNests.filter((n) -> n.isBlackFly)
-    @_activeNests = @_activeNests.filter((n) -> not n.isBlackFly)
+    @_abandonedNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.EARLY)
+    @_activeNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.LATE)
 
 module.exports = Nesting
