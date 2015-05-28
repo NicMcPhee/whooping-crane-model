@@ -2,8 +2,11 @@
 
 require 'mocha-cakes'
 
+Clock = require '../lib/clock'
 Bird = require '../lib/bird'
+Population = require '../lib/population'
 Nest = require '../lib/nest'
+Nesting = require '../lib/nesting'
 
 ###
 ======== A Handy Little Mocha-cakes Reference ========
@@ -70,29 +73,33 @@ Should assertions:
   I'm going to go with it for now.
 ###
 
-Feature "Nests",
+Feature "Nesting",
   "In order to model crane populations",
   "as a modeler",
-  "I need to model nests", ->
+  "I need to model nesting", ->
 
-    Feature "Nests have a pair of birds",
+    Feature "Can build nests from list of breeding pairs",
       "In order to be able to model nesting",
       "as a modeler",
-      "every nest needs to have one pair of birds that 'built' it", ->
+      "I want to be able to construct nests from breeding pairs", ->
 
-        Scenario "New nest", ->
+        Scenario "New nests from breeding pairs", ->
 
-          firstBird = null
-          secondBird = null
-          nest = null
+          population = null
+          numBirds = 100
+          nesting = null
+          expectedNests = null
 
-          Given "I construct two birds", ->
-            firstBird = new Bird()
-            secondBird = new Bird()
-          When "I construct a nest with that pair", ->
-            nest = new Nest([firstBird, secondBird])
-          Then "the nest should be built by those birds", ->
-            builders = nest.builders()
-            builders.length.should.eql 2
-            builders.should.include firstBird
-            builders.should.include secondBird
+          Given "I construct a population of #{numBirds} birds", ->
+            population = new Population(100)
+          And "I set the clock ahead #{Bird.pairingAge} years", ->
+            Clock.setYear(Bird.pairingAge)
+          And "I create breeding pairs", ->
+            population.mateUnpairedBirds()
+          When "I construct nests from the breeding pairs", ->
+            matingPairs = population.matingPairs()
+            nesting = new Nesting(matingPairs)
+            expectedNests = Bird.nestingProbability * matingPairs.length
+          Then "I should have about #{expectedNests} nests", ->
+            nesting.nests().length.should.be.above(0.75 * expectedNests)
+            nesting.nests().length.should.be.below(1.25 * expectedNests)
