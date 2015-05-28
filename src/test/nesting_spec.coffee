@@ -100,6 +100,39 @@ Feature "Nesting",
             matingPairs = population.matingPairs()
             nesting = new Nesting(matingPairs)
             expectedNests = Bird.nestingProbability * matingPairs.length
-          Then "I should have about #{expectedNests} nests", ->
-            nesting.nests().length.should.be.above(0.75 * expectedNests)
-            nesting.nests().length.should.be.below(1.25 * expectedNests)
+          Then "I will usually have about #{expectedNests} nests", ->
+            nesting.activeNests().length.should.be.above(0.75 * expectedNests)
+            nesting.activeNests().length.should.be.below(1.25 * expectedNests)
+
+    Feature "Can model nest abandonment",
+      "In order to be able to model nesting",
+      "as as modeler",
+      "I need to be able to model nest abandonment", ->
+
+        Scenario "Abandoment for fixed collection of nests", ->
+          numBlackflyNests = 37
+          numPostBlackflyNests = 18
+          totalNests = numBlackflyNests + numPostBlackflyNests
+          singleBlackflyNest = new Nest([])
+          singleBlackflyNest.isBlackFly = true
+          singlePostBlackflyNest = new Nest([])
+          singlePostBlackflyNest.isBlackFly = false
+          blackflyNests = null
+          postBlackflyNests = null
+          nesting = null
+
+          Given "I construct #{numBlackflyNests} blackfly nests", ->
+            blackflyNests = (singleBlackflyNest for [0...numBlackflyNests])
+          And "I construct #{numPostBlackflyNests} post-blackfly nests", ->
+            postBlackflyNests = (singlePostBlackflyNest for [0...numPostBlackflyNests])
+          And "I set the nesting to be those nests", ->
+            nesting = new Nesting([])
+            nesting._activeNests = blackflyNests.concat(postBlackflyNests)
+          Then "Total number of nests should be #{totalNests}", ->
+            nesting.activeNests().length.should.eql totalNests
+          When "Birds abandon their nests", ->
+            nesting.abandonNests()
+          Then "I should have #{numBlackflyNests} abandoned nests", ->
+            nesting.abandonedNests().length.should.eql numBlackflyNests
+          And "I should have #{numPostBlackflyNests} active nests", ->
+            nesting.activeNests().length.should.eql numPostBlackflyNests

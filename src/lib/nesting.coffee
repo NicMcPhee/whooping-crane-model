@@ -18,8 +18,15 @@ class Nesting
 
   constructor: (matingPairs) ->
     nestingPairs = matingPairs.filter((pr) -> Math.random() < Bird.nestingProbability)
-    @_nests = (new Nest(p) for p in nestingPairs)
+    @_activeNests = (new Nest(p) for p in nestingPairs)
+    @_abandonedNests = []
 
-  nests: () -> @_nests
+  activeNests: () -> @_activeNests
+
+  abandonedNests: () -> @_abandonedNests
+
+  abandonNests: () ->
+    @_abandonedNests = @_activeNests.filter((n) -> n.isBlackFly)
+    @_activeNests = @_activeNests.filter((n) -> not n.isBlackFly)
 
 module.exports = Nesting
