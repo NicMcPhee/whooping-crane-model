@@ -2,7 +2,9 @@
 
 require 'mocha-cakes'
 
+Clock = require '../lib/clock'
 Bird = require '../lib/bird'
+Population = require '../lib/population'
 Nest = require '../lib/nest'
 
 ###
@@ -96,3 +98,30 @@ Feature "Nests",
             builders.length.should.eql 2
             builders.should.include firstBird
             builders.should.include secondBird
+
+
+    Feature "Can build nests from list of breeding pairs",
+      "In order to be able to model nesting",
+      "as a modeler",
+      "I want to be able to construct nests from breeding pairs", ->
+
+        Scenario "New nests from breeding pairs", ->
+
+          population = null
+          numBirds = 100
+          nests = null
+          expectedNests = null
+
+          Given "I construct a population of #{numBirds} birds", ->
+            population = new Population(100)
+          And "I set the clock ahead #{Bird.pairingAge} years", ->
+            Clock.setYear(Bird.pairingAge)
+          And "I create breeding pairs", ->
+            population.mateUnpairedBirds()
+          When "I construct nests from the breeding pairs", ->
+            matingPairs = population.matingPairs()
+            nests = Nest.constructNests(matingPairs)
+            expectedNests = Bird.nestingProbability * matingPairs.length
+          Then "I should have about #{expectedNests} nests", ->
+            nests.length.should.be.above(0.75 * expectedNests)
+            nests.length.should.be.below(1.25 * expectedNests)

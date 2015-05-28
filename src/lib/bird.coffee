@@ -16,6 +16,7 @@ Clock = require './clock'
 class Bird
   @uuidFactory: require('uuid')
   @pairingAge: 4 # Is this right? I should look it up.
+  @nestingProbability: 0.5
 
   constructor: (@birthYear=Clock.currentYear) ->
     @uuid = Bird.uuidFactory.v4()

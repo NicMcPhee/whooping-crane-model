@@ -11,9 +11,15 @@ Licensed under the MIT license.
 
 'use strict'
 
+Bird = require '../lib/bird'
+
 class Nest
 
   constructor: (@_builders) ->
+
+  @constructNests: (matingPairs) ->
+    nestingPairs = matingPairs.filter((pr) -> Math.random() < Bird.nestingProbability)
+    (new Nest(p)) for p in nestingPairs
 
   builders: -> @_builders
 
