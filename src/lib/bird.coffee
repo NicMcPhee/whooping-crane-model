@@ -15,8 +15,9 @@ Clock = require './clock'
 
 class Bird
   @uuidFactory: require('uuid')
-  @pairingAge: 4 # Is this right? I should look it up.
+  @pairingAge: 4
   @nestingProbability: 0.5
+  @collectionProbability: 0.5
   @EARLY = 0
   @LATE = 1
 

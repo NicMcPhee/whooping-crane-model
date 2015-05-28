@@ -73,13 +73,20 @@ Should assertions:
   I'm going to go with it for now.
 ###
 
+makeNest = (nestingTime) ->
+  firstBird = new Bird()
+  secondBird = new Bird()
+  nest = new Nest([firstBird, secondBird])
+  nest._nestingTime = nestingTime
+  nest
+
 Feature "Nesting",
   "In order to model crane populations",
   "as a modeler",
-  "I need to model nesting", ->
+  "I need to model nesting and nest management", ->
 
     Feature "Can build nests from list of breeding pairs",
-      "In order to be able to model nesting",
+      "In order to model nesting",
       "as a modeler",
       "I want to be able to construct nests from breeding pairs", ->
 
@@ -105,28 +112,54 @@ Feature "Nesting",
             nesting.activeNests().length.should.be.above(0.75 * expectedNests)
             nesting.activeNests().length.should.be.below(1.25 * expectedNests)
 
+    Feature "Can model egg collection",
+      "In order to model nest management",
+      "as a modeler",
+      "I need to model human collection of eggs from early nests", ->
+
+        Scenario "Egg collection from proportion of early nests", ->
+          numEarlyNests = 17
+          numLateNests = 32
+          totalNests = numEarlyNests + numLateNests
+          earlyNests = null
+          lateNests = null
+          nesting = null
+          numCollectedNests = Math.floor(numEarlyNests * Bird.collectionProbability)
+          numUncollectedNests = numEarlyNests - numCollectedNests
+
+          Given "I construct #{numEarlyNests} early nests", ->
+            earlyNests = (makeNest(Bird.EARLY) for [0...numEarlyNests])
+          And "I construct #{numLateNests} late nests", ->
+            lateNests = (makeNest(Bird.LATE) for [0...numLateNests])
+          And "I set the nesting to be those nests", ->
+            nesting = new Nesting([])
+            nesting._activeNests = earlyNests.concat(lateNests)
+          Then "there should be #{totalNests} nests", ->
+            nesting.activeNests().length.should.eql totalNests
+          When "Eggs are collected", ->
+            nesting.collectEggs()
+          Then "I should have #{numUncollectedNests + numLateNests} active nests", ->
+            nesting.activeNests().length.should.eql numUncollectedNests + numLateNests
+          Then "I should have #{numCollectedNests} collected nests", ->
+            nesting.collectedNests().length.should.eql numCollectedNests
+
     Feature "Can model nest abandonment",
       "In order to be able to model nesting",
       "as as modeler",
       "I need to be able to model nest abandonment", ->
 
-        Scenario "Abandoment for fixed collection of nests", ->
+        Scenario "Abandoment of all early nests w/o collection", ->
           numEarlyNests = 37
           numLateNests = 18
           totalNests = numEarlyNests + numLateNests
-          bird = new Bird()
-          singleEarlyNest = new Nest([bird, bird])
-          singleEarlyNest._nestingTime = Bird.EARLY
-          singleLateNest = new Nest([bird, bird])
-          singleLateNest._nestingTime = Bird.LATE
           earlyNests = null
           lateNests = null
           nesting = null
 
           Given "I construct #{numEarlyNests} early nests", ->
-            earlyNests = (singleEarlyNest for [0...numEarlyNests])
+            earlyNests = (makeNest(Bird.EARLY) for [0...numEarlyNests])
           And "I construct #{numLateNests} late nests", ->
-            lateNests = (singleLateNest for [0...numLateNests])
+            lateNests = (makeNest(Bird.LATE) for [0...numLateNests])
           And "I set the nesting to be those nests", ->
             nesting = new Nesting([])
             nesting._activeNests = earlyNests.concat(lateNests)
