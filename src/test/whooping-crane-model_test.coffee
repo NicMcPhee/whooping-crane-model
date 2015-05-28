@@ -1,6 +1,6 @@
 'use strict'
 
-whooping-crane-model = require '../lib/whooping-crane-model.js'
+whooping_crane_model = require '../lib/whooping-crane-model.js'
 
 ###
 ======== A Handy Little Mocha Reference ========
@@ -52,9 +52,10 @@ Should assertions:
   user.should.be.a('object').and.have.property('name', 'tj')
 ###
 
+###
 describe 'Awesome', ()->
   describe '#of()', ()->
 
     it 'awesome', ()->
-      whooping-crane-model.awesome().should.eql('awesome')
-
+      whooping_crane_model.awesome().should.eql('awesome')
+###
