@@ -40,7 +40,7 @@ class Population
   addBird: () ->
     @_unpairedBirds.push(new Bird())
 
-  birds: -> @_unpairedBirds
+  birds: -> @_unpairedBirds.concat([].concat.apply([], @_pairings))
 
   unpairedBirds: -> @_unpairedBirds
 

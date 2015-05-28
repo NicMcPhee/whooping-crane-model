@@ -203,3 +203,39 @@ Feature "Populations",
           Then "All should be paired", ->
             population.unpairedBirds().length.should.eql 0
             population.matingPairs().length.should.eql (numOldBirds + numNewBirds) / 2
+
+    Feature "Collection of all birds combines paired and unpaired birds",
+      "In order to model populations",
+      "as a modeler",
+      "I need to be able to get all the birds, both paired and unpaired", ->
+
+        Scenario "Pairing old birds followed by adding unpaired birds", ->
+
+          population = null
+          numOldBirds = 45
+          numNewBirds = 18
+          totalBirds = numOldBirds + numNewBirds
+
+          Given "I construct a population of #{numOldBirds} birds", ->
+            population = new Population(numOldBirds)
+          Then "The number of birds is #{numOldBirds}", ->
+            population.birds().length.should.eql numOldBirds
+          Given "I set the clock ahead #{Bird.pairingAge} years", ->
+            Clock.currentYear = Bird.pairingAge
+          And "I pair unpaired birds", ->
+            population.mateUnpairedBirds()
+          Then "The number of birds is #{numOldBirds}", ->
+            population.birds().length.should.eql numOldBirds
+          Given "I add #{numNewBirds} new birds", ->
+            population.addBird() for [0...numNewBirds]
+          Then "The number of birds is #{totalBirds}", ->
+            population.birds().length.should.eql totalBirds
+          Given "I advance the clock another #{Bird.pairingAge} years", ->
+            Clock.currentYear += Bird.pairingAge
+          When "I pair unpaired birds", ->
+            population.mateUnpairedBirds()
+          Then "All should be paired", ->
+            population.unpairedBirds.length.should.eql 0
+            population.matingPairs().length.should.eql (numOldBirds + numNewBirds) // 2
+          And "The number of birds is #{totalBirds}", ->
+            population.birds().length.should.eql totalBirds
