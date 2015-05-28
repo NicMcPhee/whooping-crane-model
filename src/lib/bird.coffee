@@ -18,7 +18,8 @@ class Bird
   @pairingAge: 4 # Is this right? I should look it up.
   @nestingProbability: 0.5
 
-  constructor: (@birthYear=Clock.currentYear) ->
+  constructor: () ->
+    @birthYear = Clock.currentYear
     @uuid = Bird.uuidFactory.v4()
 
   age: -> Clock.currentYear - @birthYear

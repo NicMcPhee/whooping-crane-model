@@ -84,6 +84,7 @@ Feature "Nesting",
       "I want to be able to construct nests from breeding pairs", ->
 
         Scenario "New nests from breeding pairs", ->
+          before -> Clock.reset()
 
           population = null
           numBirds = 100

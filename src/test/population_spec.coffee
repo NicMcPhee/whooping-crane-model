@@ -75,6 +75,7 @@ Feature "Populations",
       "I need to be able to construct an initial population of birds", ->
 
         Scenario "New population", ->
+          before -> Clock.reset()
 
           population = null
           numBirds = 100
@@ -167,6 +168,7 @@ Feature "Populations",
             population.matingPairs().length.should.eql (numBirds / 2)
 
         Scenario "Odd number to pair", ->
+          before -> Clock.reset()
 
           population = null
           numBirds = 99
@@ -209,6 +211,7 @@ Feature "Populations",
       "I need to be able to get all the birds, both paired and unpaired", ->
 
         Scenario "Pairing old birds followed by adding unpaired birds", ->
+          before -> Clock.reset()
 
           population = null
           numOldBirds = 45

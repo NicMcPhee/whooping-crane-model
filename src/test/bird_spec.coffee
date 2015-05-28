@@ -94,11 +94,14 @@ Feature "Birds",
         Scenario "New bird", ->
 
           bird = null
+          birthYear = 2015
 
-          Given "I construct a bird with a given birth year", ->
-            bird = new Bird(2015)
-          Then "it's birth year should be correct", ->
-            bird.birthYear.should.eql 2015
+          Given "I set the clock to #{birthYear}", ->
+            Clock.currentYear = birthYear
+          Given "I construct a bird", ->
+            bird = new Bird()
+          Then "it's birth year should be #{birthYear}", ->
+            bird.birthYear.should.eql birthYear
 
     Feature "Bird ages",
       "In order to be able to manage birds",
