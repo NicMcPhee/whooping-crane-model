@@ -76,7 +76,7 @@ Feature "Nests",
   "I need to model nests", ->
 
     Feature "Nests have a pair of birds",
-      "In order to be able to model nesting",
+      "In order to model nesting",
       "as a modeler",
       "every nest needs to have one pair of birds that 'built' it", ->
 
@@ -96,3 +96,52 @@ Feature "Nests",
             builders.length.should.eql 2
             builders.should.include firstBird
             builders.should.include secondBird
+
+    Feature "Nests have a nesting time",
+      "In order to model nesting",
+      "as a modeler",
+      "every nest needs to have a early/late nesting time", ->
+
+        Scenario "Early nester wins", ->
+
+          Scenario "Both parents are early nesters", ->
+
+            firstBird = null
+            secondBird = null
+            nest = null
+
+            Given "I construct two early nesters", ->
+              firstBird = new Bird(Bird.EARLY)
+              secondBird = new Bird(Bird.EARLY)
+            When "they construct a nest", ->
+              nest = new Nest([firstBird, secondBird])
+            Then "the nest will be EARLY", ->
+              nest.nestingTime().should.eql Bird.EARLY
+
+          Scenario "Both parents are late nesters", ->
+
+            firstBird = null
+            secondBird = null
+            nest = null
+
+            Given "I construct two early nesters", ->
+              firstBird = new Bird(Bird.LATE)
+              secondBird = new Bird(Bird.LATE)
+            When "they construct a nest", ->
+              nest = new Nest([firstBird, secondBird])
+            Then "the nest will be LATE", ->
+              nest.nestingTime().should.eql Bird.LATE
+
+          Scenario "Parents have different preferences", ->
+
+            firstBird = null
+            secondBird = null
+            nest = null
+
+            Given "I construct two preferences with different preferences", ->
+              firstBird = new Bird(Bird.EARLY)
+              secondBird = new Bird(Bird.LATE)
+            When "they construct a nest", ->
+              nest = new Nest([firstBird, secondBird])
+            Then "the nest will be EARLY", ->
+              nest.nestingTime().should.eql Bird.EARLY

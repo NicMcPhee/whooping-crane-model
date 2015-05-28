@@ -132,7 +132,6 @@ Feature "Nesting",
             nesting._activeNests = earlyNests.concat(lateNests)
           Then "Total number of nests should be #{totalNests}", ->
             nesting.activeNests().length.should.eql totalNests
-            console.log(n.nestingTime() for n in nesting.activeNests())
           When "Birds abandon their nests", ->
             nesting.abandonNests()
           Then "I should have #{numEarlyNests} abandoned nests", ->
