@@ -171,3 +171,33 @@ Feature "Nesting",
             nesting.abandonedNests().length.should.eql numEarlyNests
           And "I should have #{numLateNests} active nests", ->
             nesting.activeNests().length.should.eql numLateNests
+
+        Scenario "Abandoment of all early nests after collection", ->
+          numEarlyNests = 37
+          numLateNests = 5
+          totalNests = numEarlyNests + numLateNests
+          earlyNests = null
+          lateNests = null
+          nesting = null
+          numCollectedNests = Math.floor(numEarlyNests * Bird.collectionProbability)
+          numUncollectedNests = numEarlyNests - numCollectedNests
+
+          Given "I construct #{numEarlyNests} early nests", ->
+            earlyNests = (makeNest(Bird.EARLY) for [0...numEarlyNests])
+          And "I construct #{numLateNests} late nests", ->
+            lateNests = (makeNest(Bird.LATE) for [0...numLateNests])
+          And "I set the nesting to be those nests", ->
+            nesting = new Nesting([])
+            nesting._activeNests = earlyNests.concat(lateNests)
+          Then "Total number of nests should be #{totalNests}", ->
+            nesting.activeNests().length.should.eql totalNests
+          When "Eggs are collected", ->
+            nesting.collectEggs()
+          And "Birds abandon their nests", ->
+            nesting.abandonNests()
+          Then "I should have #{numUncollectedNests + numLateNests} active nests", ->
+            nesting.activeNests().length.should.eql numLateNests
+          And "I should have #{numCollectedNests} collected nests", ->
+            nesting.collectedNests().length.should.eql numCollectedNests
+          And "I should have #{numEarlyNests} abandoned nests", ->
+            nesting.abandonedNests().length.should.eql numUncollectedNests
