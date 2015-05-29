@@ -19,7 +19,7 @@ class Bird
   @nestingProbability: 0.5
   @collectionProbability: 0.5
   @releaseCount: 6
-  @eggConversionRate: 0.25
+  @eggConversionRate: 0.5 # Unclear if we have the right number here
   @EARLY = 0
   @LATE = 1
   @WILD_REARED = 2
@@ -32,6 +32,17 @@ class Bird
       Bird.EARLY
     else
       Bird.LATE
+
+  @fromNest: (nest, howReared) ->
+    firstParent = nest.builders()[0]
+    secondParent = nest.builders()[1]
+    if firstParent.nestingPreference() == secondParent.nestingPreference()
+      babyPreference = firstParent.nestingPreference()
+    else if Math.random() < 0.5
+      babyPreference = Bird.EARLY
+    else
+      babyPreference = Bird.LATE
+    new Bird(babyPreference, howReared)
 
   age: -> Clock.currentYear - @birthYear
 

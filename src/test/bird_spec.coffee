@@ -3,6 +3,7 @@
 require 'mocha-cakes'
 
 Clock = require '../lib/clock'
+Nest = require '../lib/nest'
 Bird = require '../lib/bird'
 
 ###
@@ -221,3 +222,61 @@ Feature "Birds",
             bird = new Bird(Bird.EARLY, Bird.CAPTIVE_REARED)
           Then "it should have been reared in captivity", ->
             bird.howReared().should.eql Bird.CAPTIVE_REARED
+
+    Feature "Bird constructed from nest",
+      "In order to model hatching",
+      "as a modeler",
+      "I need to be able to construct birds from nests", ->
+
+        Scenario "Construct a bird from a nest with two early parents", ->
+          nest = null
+          firstParent = null
+          secondParent = null
+          baby = null
+
+          Given "I have two early parents", ->
+            firstParent = new Bird(Bird.EARLY)
+            secondParent = new Bird(Bird.EARLY)
+          And "a nest built by those parents", ->
+            nest = new Nest([firstParent, secondParent])
+          When "I construct a bird from that nest", ->
+            baby = Bird.fromNest(nest)
+          Then "that bird also prefers early nesting", ->
+            baby.nestingPreference().should.eql Bird.EARLY
+
+        Scenario "Construct a bird from a nest with two late parents", ->
+          nest = null
+          firstParent = null
+          secondParent = null
+          baby = null
+
+          Given "I have two late parents", ->
+            firstParent = new Bird(Bird.LATE)
+            secondParent = new Bird(Bird.LATE)
+          And "a nest built by those parents", ->
+            nest = new Nest([firstParent, secondParent])
+          When "I construct a bird from that nest", ->
+            baby = Bird.fromNest(nest)
+          Then "that bird also prefers late nesting", ->
+            baby.nestingPreference().should.eql Bird.LATE
+
+        Scenario "Construct a bird from a nest with mixed parents (i.e., one early one late)", ->
+          nest = null
+          firstParent = null
+          secondParent = null
+          babies = null
+          numTrials = 100
+
+          Given "I have mixed parents, i.e., one prefers early nesting, one late", ->
+            firstParent = new Bird(Bird.EARLY)
+            secondParent = new Bird(Bird.LATE)
+          And "a nest built by those parents", ->
+            nest = new Nest([firstParent, secondParent])
+          When "I construct #{numTrials} birds from that nest", ->
+            babies = (Bird.fromNest(nest) for [0...numTrials])
+          Then "about half of those birds also prefer early nesting", ->
+            numEarly = (b for b in babies when b.nestingPreference() is Bird.EARLY)
+            numEarly.length.should.be.approximately(numTrials * 0.5, 0.33 * numTrials * 0.5)
+          Then "about half of those birds also prefer late nesting", ->
+            numLate = (b for b in babies when b.nestingPreference() is Bird.LATE)
+            numLate.length.should.be.approximately(numTrials * 0.5, 0.33 * numTrials * 0.5)
