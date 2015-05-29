@@ -476,3 +476,7 @@ Feature "Nesting",
           And "approximately #{expectedLateNesters} should be late nesters", ->
             lateNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.LATE)
             lateNesters.length.should.be.approximately(expectedLateNesters, expectedLateNesters * 0.5)
+          And "the original birds are all #{Bird.pairingAge} years old", ->
+            population.birds().every((b) -> b.age().should.eql Bird.pairingAge)
+          And "the new birds are all 0 years old", ->
+            newBirds.every((b) -> b.age().should.eql 0)
