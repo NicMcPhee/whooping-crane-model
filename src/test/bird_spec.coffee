@@ -202,3 +202,22 @@ Feature "Birds",
             bird = new Bird(Bird.LATE)
           Then "it's preference should be late", ->
             bird.nestingPreference().should.eql Bird.LATE
+
+    Feature "Bird rearing conditions",
+      "In order to understand track different types of birds",
+      "as a modeler",
+      "I need to record whether birds were reared in the wild or in captivity", ->
+
+        Scenario "Construct a bird reared in the wild", ->
+          bird = null
+          Given "I construct a bird reared in the wild", ->
+            bird = new Bird(Bird.EARLY, Bird.WILD_REARED)
+          Then "it should have been reared in the wild", ->
+            bird.howReared().should.eql Bird.WILD_REARED
+
+        Scenario "Construct a bird reared in captivity", ->
+          bird = null
+          Given "I construct a bird reared in captivity", ->
+            bird = new Bird(Bird.EARLY, Bird.CAPTIVE_REARED)
+          Then "it should have been reared in captivity", ->
+            bird.howReared().should.eql Bird.CAPTIVE_REARED

@@ -18,10 +18,14 @@ class Bird
   @pairingAge: 4
   @nestingProbability: 0.5
   @collectionProbability: 0.5
+  @releaseCount: 6
+  @eggConversionRate: 0.25
   @EARLY = 0
   @LATE = 1
+  @WILD_REARED = 2
+  @CAPTIVE_REARED = 3
 
-  constructor: (@_nestingPreference) ->
+  constructor: (@_nestingPreference, @_howReared) ->
     @birthYear = Clock.currentYear
     @uuid = Bird.uuidFactory.v4()
     @_nestingPreference ?= if Math.random() < 0.5
@@ -34,5 +38,7 @@ class Bird
   canMate: -> @age() >= Bird.pairingAge
 
   nestingPreference: -> @_nestingPreference
+
+  howReared: -> @_howReared
 
 module.exports = Bird
