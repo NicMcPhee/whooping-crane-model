@@ -232,23 +232,27 @@ Feature "Birds",
           nest = null
           firstParent = null
           secondParent = null
-          baby = null
+          babies = null
+          numTrials = 100
 
           Given "I have two early parents", ->
             firstParent = new Bird(Bird.EARLY)
             secondParent = new Bird(Bird.EARLY)
           And "a nest built by those parents", ->
             nest = new Nest([firstParent, secondParent])
-          When "I construct a bird from that nest", ->
-            baby = Bird.fromNest(nest)
-          Then "that bird also prefers early nesting", ->
-            baby.nestingPreference().should.eql Bird.EARLY
+          When "I construct #{numTrials} birds from that nest", ->
+            babies = (Bird.fromNest(nest) for [0...numTrials])
+          Then "most of those birds also prefers early nesting", ->
+            earlyNesters = babies.filter((b) -> b.nestingPreference() == Bird.EARLY)
+            expectedEarly = numTrials * (1 - Bird.mutationRate)
+            earlyNesters.length.should.be.approximately expectedEarly, expectedEarly * 0.33
 
         Scenario "Construct a bird from a nest with two late parents", ->
           nest = null
           firstParent = null
           secondParent = null
-          baby = null
+          babies = null
+          numTrials = 100
 
           Given "I have two late parents", ->
             firstParent = new Bird(Bird.LATE)
@@ -256,9 +260,11 @@ Feature "Birds",
           And "a nest built by those parents", ->
             nest = new Nest([firstParent, secondParent])
           When "I construct a bird from that nest", ->
-            baby = Bird.fromNest(nest)
-          Then "that bird also prefers late nesting", ->
-            baby.nestingPreference().should.eql Bird.LATE
+            babies = (Bird.fromNest(nest) for [0...numTrials])
+          Then "most of those birds also prefer late nesting", ->
+            lateNesters = babies.filter((b) -> b.nestingPreference() == Bird.LATE)
+            expectedLate = numTrials * (1 - Bird.mutationRate)
+            lateNesters.length.should.be.approximately expectedLate, expectedLate * 0.33
 
         Scenario "Construct a bird from a nest with mixed parents (i.e., one early one late)", ->
           nest = null

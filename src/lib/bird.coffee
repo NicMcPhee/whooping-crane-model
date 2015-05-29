@@ -20,6 +20,8 @@ class Bird
   @collectionProbability: 0.5
   @releaseCount: 6
   @eggConversionRate: 0.5 # Unclear if we have the right number here
+  @mutationRate: 0.001 # From the bat modeling paper
+
   @EARLY = 0
   @LATE = 1
   @WILD_REARED = 2
@@ -38,6 +40,8 @@ class Bird
     secondParent = nest.builders()[1]
     if firstParent.nestingPreference() == secondParent.nestingPreference()
       babyPreference = firstParent.nestingPreference()
+      if Math.random() < Bird.mutationRate
+        babyPreference = Bird.flip(babyPreference)
     else if Math.random() < 0.5
       babyPreference = Bird.EARLY
     else
@@ -51,5 +55,11 @@ class Bird
   nestingPreference: -> @_nestingPreference
 
   howReared: -> @_howReared
+
+  @flip: (preference) ->
+    if preference == Bird.EARLY
+      Bird.LATE
+    else
+      Bird.EARLY
 
 module.exports = Bird
