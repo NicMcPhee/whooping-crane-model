@@ -333,3 +333,146 @@ Feature "Nesting",
             wildReared = newBirds.filter((b) -> b.howReared() is Bird.WILD_REARED)
             numWildReared = wildReared.length
             wildReared.length.should.eql (newBirds.length - numCaptiveReared)
+
+    Feature "Full reproduction cycle",
+      "In order to model the crane lifecycle",
+      "as a modeler",
+      "I need to be able to model a full year reproduction cycle", ->
+
+        Scenario "Initial population is all late nesters", ->
+          numInitialBirds = 200
+          population = new Population(0)
+          nesting = null
+          newBirds = null
+          numPairs = numInitialBirds // 2
+          numNests = numPairs * Bird.nestingProbability
+          expectedNumBirds = numNests * Bird.eggConversionRate
+
+          Given "I construct a population of #{numInitialBirds} birds", ->
+            Clock.reset()
+            population.addBird(new Bird(Bird.LATE)) for [0...numInitialBirds]
+          And "I set the clock ahead #{Bird.pairingAge} years", ->
+            Clock.setYear(Bird.pairingAge)
+          And "I create mating pairs", ->
+            population.mateUnpairedBirds()
+          And "I create a nesting environment", ->
+            nesting = new Nesting(population.matingPairs())
+          When "I run the reproduction cycle", ->
+            newBirds = nesting.reproductionCycle()
+          Then "I will usually have about #{expectedNumBirds} new birds", ->
+            newBirds.length.should.be.approximately(expectedNumBirds, 0.5 * expectedNumBirds)
+          And "almost all of them will be late nesters", ->
+            lateNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.LATE)
+            expectedLate = expectedNumBirds * (1 - Bird.mutationRate)
+            lateNesters.length.should.be.approximately(expectedLate, expectedLate * 0.5)
+
+        Scenario "Large initial population is all early nesters", ->
+          numInitialBirds = 100
+          population = new Population(0)
+          nesting = null
+          newBirds = null
+          numPairs = numInitialBirds // 2
+          numNests = numPairs * Bird.nestingProbability
+          expectedNumBirds = Math.min(numNests * Bird.collectionProbability, Bird.releaseCount)
+
+          Given "I construct a population of #{numInitialBirds} birds", ->
+            Clock.reset()
+            population.addBird(new Bird(Bird.EARLY)) for [0...numInitialBirds]
+          And "I set the clock ahead #{Bird.pairingAge} years", ->
+            Clock.setYear(Bird.pairingAge)
+          And "I create mating pairs", ->
+            population.mateUnpairedBirds()
+          And "I create a nesting environment", ->
+            nesting = new Nesting(population.matingPairs())
+          When "I run the reproduction cycle", ->
+            newBirds = nesting.reproductionCycle()
+          Then "I will usually have about #{expectedNumBirds} new birds", ->
+            newBirds.length.should.be.approximately(expectedNumBirds, 0.5 * expectedNumBirds)
+          And "almost all of them will be early nesters", ->
+            earlyNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.EARLY)
+            expectedEarly = expectedNumBirds * (1 - Bird.mutationRate)
+            earlyNesters.length.should.be.approximately(expectedEarly, expectedEarly * 0.5)
+
+        Scenario "Small initial population is all early nesters", ->
+          # Small enough that the expected number of birds is less than
+          # Bird.releaseCount
+          numInitialBirds = 32
+          population = new Population(0)
+          nesting = null
+          newBirds = null
+          numPairs = numInitialBirds // 2
+          numNests = numPairs * Bird.nestingProbability
+          expectedNumBirds = Math.min(numNests * Bird.collectionProbability, Bird.releaseCount)
+
+          Given "I construct a population of #{numInitialBirds} birds", ->
+            Clock.reset()
+            population.addBird(new Bird(Bird.EARLY)) for [0...numInitialBirds]
+          And "I set the clock ahead #{Bird.pairingAge} years", ->
+            Clock.setYear(Bird.pairingAge)
+          And "I create mating pairs", ->
+            population.mateUnpairedBirds()
+          And "I create a nesting environment", ->
+            nesting = new Nesting(population.matingPairs())
+          When "I run the reproduction cycle", ->
+            newBirds = nesting.reproductionCycle()
+          Then "I will usually have about #{expectedNumBirds} new birds", ->
+            newBirds.length.should.be.approximately(expectedNumBirds, 0.5 * expectedNumBirds)
+          And "almost all of them will be early nesters", ->
+            earlyNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.EARLY)
+            expectedEarly = expectedNumBirds * (1 - Bird.mutationRate)
+            earlyNesters.length.should.be.approximately(expectedEarly, expectedEarly * 0.5)
+
+        Scenario "Mixed initial population of early and late nesters", ->
+          numEarlyNesters = 200
+          numLateNesters = 200
+          numInitialBirds = numEarlyNesters + numLateNesters
+          numPairs = numInitialBirds // 2
+          numNests = numPairs * Bird.nestingProbability
+          numNests.should.eql 100
+          numAllEarlyNests = 0.25 * numNests
+          numAllLateNests = 0.25 * numNests
+          numMixedNests = 0.5 * numNests
+          numAllEarlyNests.should.eql 25
+          numAllLateNests.should.eql 25
+          numMixedNests.should.eql 50
+          # Assumes the early wins strategy
+          numEarlyNests = numAllEarlyNests + numMixedNests
+          numLateNests = numAllLateNests
+          numEarlyNests.should.eql 75
+          numLateNests.should.eql 25
+          expectedCaptiveBirds = Math.min(numNests * Bird.collectionProbability, Bird.releaseCount)
+          expectedCaptiveBirds.should.eql 6
+          expectedWildBirds = numLateNests * Bird.eggConversionRate
+          expectedWildBirds.should.eql 12.5
+          expectedNumBirds = expectedCaptiveBirds + expectedWildBirds
+          expectedNumBirds.should.eql 18.5
+          expectedEarlyNesters = expectedCaptiveBirds * (1 * 0.25 / 0.75 + 0.5 * 0.5 / 0.75)
+          expectedEarlyNesters.should.eql (2 + 2)
+          expectedLateNesters = expectedWildBirds + (expectedCaptiveBirds - expectedEarlyNesters)
+          expectedLateNesters.should.eql 14.5
+          expectedNumBirds.should.eql (expectedEarlyNesters + expectedLateNesters)
+
+          population = new Population(0)
+          nesting = null
+          newBirds = null
+
+          Given "I construct a population of #{numEarlyNesters} early birds and #{numLateNesters} late birds", ->
+            Clock.reset()
+            population.addBird(new Bird(Bird.EARLY)) for [0...numEarlyNesters]
+            population.addBird(new Bird(Bird.LATE)) for [0...numLateNesters]
+          And "I set the clock ahead #{Bird.pairingAge} years", ->
+            Clock.setYear(Bird.pairingAge)
+          And "I create mating pairs", ->
+            population.mateUnpairedBirds()
+          And "I create a nesting environment", ->
+            nesting = new Nesting(population.matingPairs())
+          When "I run the reproduction cycle", ->
+            newBirds = nesting.reproductionCycle()
+          Then "I will usually have about #{expectedNumBirds} new birds", ->
+            newBirds.length.should.be.approximately(expectedNumBirds, 0.33 * expectedNumBirds)
+          And "approximately #{expectedEarlyNesters} should be early nesters", ->
+            earlyNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.EARLY)
+            earlyNesters.length.should.be.approximately(expectedEarlyNesters, expectedEarlyNesters * 0.5)
+          And "approximately #{expectedLateNesters} should be late nesters", ->
+            lateNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.LATE)
+            lateNesters.length.should.be.approximately(expectedLateNesters, expectedLateNesters * 0.5)

@@ -62,4 +62,9 @@ class Nesting
     newCaptiveBirds = (new Bird.fromNest(nest, Bird.CAPTIVE_REARED) for nest in @._releasedNests)
     newWildBirds.concat(newCaptiveBirds)
 
+  reproductionCycle: () ->
+    @collectEggs()
+    @abandonNests()
+    @hatchEggs()
+
 module.exports = Nesting
