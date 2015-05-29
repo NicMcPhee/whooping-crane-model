@@ -80,6 +80,10 @@ makeNest = (nestingTime) ->
   nest._nestingTime = nestingTime
   nest
 
+sleep = (ms) ->
+  start = new Date().getTime()
+  continue while new Date().getTime() - start < ms
+
 Feature "Nesting",
   "In order to model crane populations",
   "as a modeler",
@@ -106,11 +110,11 @@ Feature "Nesting",
             population.mateUnpairedBirds()
           When "I construct nests from the breeding pairs", ->
             matingPairs = population.matingPairs()
-            nesting = new Nesting(matingPairs)
             expectedNests = Bird.nestingProbability * matingPairs.length
+            nesting = new Nesting(matingPairs)
           Then "I will usually have about #{expectedNests} nests", ->
-            nesting.activeNests().length.should.be.above(0.75 * expectedNests)
-            nesting.activeNests().length.should.be.below(1.25 * expectedNests)
+            nesting.activeNests().length.should.be.approximately(expectedNests, 0.33 * expectedNests)
+            #nesting.should.fail("WHY DOES THIS KEEP PRINTING NULL?")
 
     Feature "Can model egg collection",
       "In order to model nest management",
@@ -243,13 +247,18 @@ Feature "Nesting",
             And "I should have #{numEarlyNests} abandoned nests", ->
               nesting.abandonedNests().length.should.eql numUncollectedNests
 
-###
     Feature "Egg hatching",
       "In order to model egg hatching",
       "as a modeler",
-      "I need to model  of eggs to birds", ->
+      "I need to model the conversion of eggs into birds", ->
 
-        Scenario "Correct number and type for all late nests", ->
+        Scenario "Correct number and type with only late nests", ->
+          numLateNests = 37
+          lateNests = null
+          nesting = null
+          numBirds = Math.floor(numLateNests * Bird.eggConversionRate)
+          newBirds = null
+
           Given "I construct #{numLateNests} late nests", ->
             lateNests = (makeNest(Bird.LATE) for [0...numLateNests])
           And "I set the nesting to be those nests", ->
@@ -259,8 +268,68 @@ Feature "Nesting",
             nesting.collectEggs()
           And "Birds abandon their nests", ->
             nesting.abandonNests()
-          When "we convert eggs", ->
-            nesting.convertEggs()
-          Then ""
+          When "eggs hatch", ->
+            newBirds = nesting.hatchEggs()
+          Then "there should be about #{numBirds} new birds", ->
+            newBirds.length.should.be.approximately(numBirds, 0.33*numBirds)
+          And "all those birds should be wild reared", ->
+            bird.howReared().should.eql Bird.WILD_REARED for bird in newBirds
 
-###
+        Scenario "Correct number and type with only early nests", ->
+          numEarlyNests = 37
+          earlyNests = null
+          nesting = null
+          numBirds = Math.min(Bird.releaseCount, numEarlyNests * Bird.collectionProbability)
+          newBirds = null
+
+          Given "I construct #{numEarlyNests} early nests", ->
+            earlyNests = (makeNest(Bird.EARLY) for [0...numEarlyNests])
+          And "I set the nesting to be those nests", ->
+            nesting = new Nesting([])
+            nesting._activeNests = earlyNests
+          And "Eggs are collected", ->
+            nesting.collectEggs()
+          And "Birds abandon their nests", ->
+            nesting.abandonNests()
+          When "eggs hatch", ->
+            newBirds = nesting.hatchEggs()
+          Then "there should be #{numBirds} new birds", ->
+            newBirds.length.should.eql numBirds
+          And "all those birds should be captive reared", ->
+            bird.howReared().should.eql Bird.CAPTIVE_REARED for bird in newBirds
+
+        Scenario "Correct number and type with mixed nests", ->
+          numEarlyNests = 37
+          numLateNests = 45
+          earlyNests = null
+          lateNests = null
+          nesting = null
+          numEarlyBirds = Math.min(Bird.releaseCount, numEarlyNests * Bird.collectionProbability)
+          numLateBirds = Math.floor(numLateNests * Bird.eggConversionRate)
+          numBirds = numEarlyBirds + numLateBirds
+          newBirds = null
+          numCaptiveReared = null
+
+          Given "I construct #{numEarlyNests} early nests", ->
+            earlyNests = (makeNest(Bird.EARLY) for [0...numEarlyNests])
+          And "I construct #{numLateNests} late nests", ->
+            lateNests = (makeNest(Bird.LATE) for [0...numLateNests])
+          And "I set the nesting to be the combination of both those nest sets", ->
+            nesting = new Nesting([])
+            nesting._activeNests = earlyNests.concat(lateNests)
+          And "Eggs are collected", ->
+            nesting.collectEggs()
+          And "Birds abandon their nests", ->
+            nesting.abandonNests()
+          When "eggs hatch", ->
+            newBirds = nesting.hatchEggs()
+          Then "there should be about #{numBirds} new birds", ->
+            newBirds.length.should.be.approximately(numBirds, 0.33 * numBirds)
+          And "#{numEarlyBirds} of those birds should be captive reared", ->
+            captiveReared = newBirds.filter((b) -> b.howReared() is Bird.CAPTIVE_REARED)
+            numCaptiveReared = captiveReared.length
+            numCaptiveReared.should.eql numEarlyBirds
+          And "the rest of those birds should be wild reared", ->
+            wildReared = newBirds.filter((b) -> b.howReared() is Bird.WILD_REARED)
+            numWildReared = wildReared.length
+            wildReared.length.should.eql (newBirds.length - numCaptiveReared)

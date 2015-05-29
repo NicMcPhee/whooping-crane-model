@@ -56,6 +56,10 @@ class Nesting
     @_abandonedNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.EARLY)
     @_activeNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.LATE)
 
-  # successfulNests: () ->
+  hatchEggs: () ->
+    hatchedWildNests = @_activeNests.filter((n) -> Math.random() < Bird.eggConversionRate)
+    newWildBirds = (new Bird.fromNest(nest, Bird.WILD_REARED) for nest in hatchedWildNests)
+    newCaptiveBirds = (new Bird.fromNest(nest, Bird.CAPTIVE_REARED) for nest in @._releasedNests)
+    newWildBirds.concat(newCaptiveBirds)
 
 module.exports = Nesting
