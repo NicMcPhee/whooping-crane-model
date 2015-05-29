@@ -32,11 +32,14 @@ class Nesting
     nestingPairs = matingPairs.filter((pr) -> Math.random() < Bird.nestingProbability)
     @_activeNests = (new Nest(p) for p in nestingPairs)
     @_collectedNests = []
+    @_releasedNests = []
     @_abandonedNests = []
 
   activeNests: () -> @_activeNests
 
   collectedNests: () -> @_collectedNests
+
+  releasedNests: () -> @_releasedNests
 
   abandonedNests: () -> @_abandonedNests
 
@@ -46,9 +49,13 @@ class Nesting
     numToCollect = Math.floor(earlyNests.length * Bird.collectionProbability)
     @_collectedNests = earlyNests[0...numToCollect]
     @_activeNests = @_activeNests.filter((n) => n not in @_collectedNests)
+    # Only some collected eggs will be released back into the wild.
+    @_releasedNests = @_collectedNests[0...Bird.releaseCount]
 
   abandonNests: () ->
     @_abandonedNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.EARLY)
     @_activeNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.LATE)
+
+  # successfulNests: () ->
 
 module.exports = Nesting
