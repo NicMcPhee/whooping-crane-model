@@ -34,11 +34,12 @@ chunk = (array, chunkSize) ->
 class Population
 
   constructor: (popSize) ->
-    @_unpairedBirds = (new Bird(0) for [0...popSize])
+    @_unpairedBirds = (new Bird() for [0...popSize])
     @_pairings = []
 
-  addBird: () ->
-    @_unpairedBirds.push(new Bird())
+  addBird: (bird) ->
+    bird ?= new Bird()
+    @_unpairedBirds.push(bird)
 
   birds: -> @_unpairedBirds.concat([].concat.apply([], @_pairings))
 
