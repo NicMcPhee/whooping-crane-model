@@ -183,3 +183,22 @@ Feature "Birds",
             Clock.incrementYear() for [0...Bird.pairingAge-1]
           Then "the bird should be able to mate", ->
             bird.canMate().should.be.false
+
+    Feature "Bird nesting preferences",
+      "In order to understand evolution of nesting timing",
+      "as a modeler",
+      "I need to have birds have a nesting (time) preference", ->
+
+        Scenario "Construct a bird with early nesting preference", ->
+          bird = null
+          Given "I construct a bird with the early nesting preference", ->
+            bird = new Bird(Bird.EARLY)
+          Then "it's preference should be early", ->
+            bird.nestingPreference().should.eql Bird.EARLY
+
+        Scenario "Construct a bird with late nesting preference", ->
+          bird = null
+          Given "I construct a bird with the late nesting preference", ->
+            bird = new Bird(Bird.LATE)
+          Then "it's preference should be late", ->
+            bird.nestingPreference().should.eql Bird.LATE
