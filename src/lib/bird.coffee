@@ -54,7 +54,15 @@ class Bird
 
   nestingPreference: -> @_nestingPreference
 
+  isEarly: -> @_nestingPreference is Bird.EARLY
+
+  isLate: -> @_nestingPreference is Bird.LATE
+
   howReared: -> @_howReared
+
+  isCaptive: -> @_howReared is Bird.CAPTIVE_REARED
+
+  isWild: -> @_howReared is Bird.WILD_REARED
 
   @flip: (preference) ->
     if preference == Bird.EARLY
