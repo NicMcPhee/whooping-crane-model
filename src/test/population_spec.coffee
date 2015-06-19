@@ -149,7 +149,8 @@ Feature "Populations",
             population = new Population(numBirds)
           When "I pair unpaired birds", ->
             population.mateUnpairedBirds()
-          Then "all the birds are still unpaired because they're not old enough", ->
+          Then "all the birds are still unpaired because \
+                  they're not old enough", ->
             population.unpairedBirds().length.should.eql numBirds
 
         Scenario "Everyone unpaired and old enough to pair", ->
@@ -165,7 +166,7 @@ Feature "Populations",
             population.mateUnpairedBirds()
           Then "Everyone should be paired", ->
             population.unpairedBirds().length.should.eql 0
-            population.matingPairs().length.should.eql (numBirds / 2)
+            population.matingPairs().length.should.eql (numBirds // 2)
 
         Scenario "Odd number to pair", ->
           before -> Clock.reset()
@@ -188,6 +189,8 @@ Feature "Populations",
           population = null
           numOldBirds = 45
           numNewBirds = 15
+          numBirds = numOldBirds + numNewBirds
+          numPairs = numBirds // 2
 
           Given "I construct a population of #{numOldBirds} birds", ->
             population = new Population(numOldBirds)
@@ -203,7 +206,7 @@ Feature "Populations",
             population.mateUnpairedBirds()
           Then "All should be paired", ->
             population.unpairedBirds().length.should.eql 0
-            population.matingPairs().length.should.eql (numOldBirds + numNewBirds) / 2
+            population.matingPairs().length.should.eql numPairs
 
     Feature "Collection of all birds combines paired and unpaired birds",
       "In order to model populations",
@@ -238,6 +241,33 @@ Feature "Populations",
             population.mateUnpairedBirds()
           Then "All should be paired", ->
             population.unpairedBirds.length.should.eql 0
-            population.matingPairs().length.should.eql (numOldBirds + numNewBirds) // 2
+            population.matingPairs().length.should.eql totalBirds // 2
           And "The number of birds is #{totalBirds}", ->
             population.birds().length.should.eql totalBirds
+
+    Feature "Mortality pass probabilistically kills birds",
+      "In order to model the mortality of birds",
+      "as a modeler",
+      "We need birds to die with some probability", ->
+
+        Scenario "A population of only immature birds", ->
+          before -> Clock.reset()
+
+          population = null
+          numBirds = 101
+          remainingBirds = numBirds * (1 - Bird.firstYearMortalityRate)
+
+          Given "I construct a population of #{numBirds} birds", ->
+            population = new Population(numBirds)
+          And "I pair the unpaired birds", ->
+            population.mateUnpairedBirds()
+          When "I run a mortality pass", ->
+            population.mortalityPass()
+          Then "there should be approximately #{remainingBirds} birds left", ->
+            birds = population.birds()
+            birds.length.should.be.approximately remainingBirds,
+              0.33 * remainingBirds
+          And "None are paired", ->
+            population.matingPairs().length.should.eql 0
+            birds = population.birds()
+            population.unpairedBirds().length.should.eql birds.length

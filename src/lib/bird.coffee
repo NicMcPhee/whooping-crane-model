@@ -21,6 +21,8 @@ class Bird
   @releaseCount: 6
   @eggConversionRate: 0.5 # Unclear if we have the right number here
   @mutationRate: 0.001 # From the bat modeling paper
+  @firstYearMortalityRate: 0.6
+  @matureMortalityRate: 0.1
 
   @EARLY = 0
   @LATE = 1
