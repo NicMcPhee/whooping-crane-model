@@ -271,3 +271,27 @@ Feature "Populations",
             population.matingPairs().length.should.eql 0
             birds = population.birds()
             population.unpairedBirds().length.should.eql birds.length
+
+        Scenario "A population of only one-year old birds", ->
+          before -> Clock.reset()
+
+          population = null
+          numBirds = 101
+          remainingBirds = numBirds * (1 - Bird.matureMortalityRate)
+
+          Given "I construct a population of #{numBirds} birds", ->
+            population = new Population(numBirds)
+          And "I advance the clock one year", ->
+            Clock.incrementYear()
+          And "I pair the unpaired birds", ->
+            population.mateUnpairedBirds()
+          When "I run a mortality pass", ->
+            population.mortalityPass()
+          Then "there should be approximately #{remainingBirds} birds left", ->
+            birds = population.birds()
+            birds.length.should.be.approximately remainingBirds,
+              0.33 * remainingBirds
+          And "None are paired", ->
+            population.matingPairs().length.should.eql 0
+            birds = population.birds()
+            population.unpairedBirds().length.should.eql birds.length
