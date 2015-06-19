@@ -29,7 +29,8 @@ shuffle = (a) ->
 class Nesting
 
   constructor: (matingPairs) ->
-    nestingPairs = matingPairs.filter((pr) -> Math.random() < Bird.nestingProbability)
+    nestingPairs = matingPairs.filter(
+      (pr) -> Math.random() < Bird.nestingProbability)
     @_activeNests = (new Nest(p) for p in nestingPairs)
     @_collectedNests = []
     @_releasedNests = []
@@ -53,13 +54,19 @@ class Nesting
     @_releasedNests = @_collectedNests[0...Bird.releaseCount]
 
   abandonNests: () ->
-    @_abandonedNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.EARLY)
-    @_activeNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.LATE)
+    @_abandonedNests = @_activeNests.filter(
+      (n) -> n.nestingTime() is Bird.EARLY)
+    @_activeNests = @_activeNests.filter(
+      (n) -> n.nestingTime() is Bird.LATE)
+
+  hatchNests: (birdType, nests) ->
+    Bird.fromNest(nest, birdType) for nest in nests
 
   hatchEggs: () ->
-    hatchedWildNests = @_activeNests.filter((n) -> Math.random() < Bird.eggConversionRate)
-    newWildBirds = (new Bird.fromNest(nest, Bird.WILD_REARED) for nest in hatchedWildNests)
-    newCaptiveBirds = (new Bird.fromNest(nest, Bird.CAPTIVE_REARED) for nest in @._releasedNests)
+    hatchedWildNests = @_activeNests.filter(
+      (n) -> Math.random() < Bird.eggConversionRate)
+    newWildBirds = @hatchNests(Bird.WILD_REARED, hatchedWildNests)
+    newCaptiveBirds = @hatchNests(Bird.CAPTIVE_REARED, @._releasedNests)
     newWildBirds.concat(newCaptiveBirds)
 
   reproductionCycle: () ->

@@ -207,7 +207,8 @@ Feature "Birds",
     Feature "Bird rearing conditions",
       "In order to understand track different types of birds",
       "as a modeler",
-      "I need to record whether birds were reared in the wild or in captivity", ->
+      "I need to record whether birds were \
+        reared in the wild or in captivity", ->
 
         Scenario "Construct a bird reared in the wild", ->
           bird = null
@@ -243,9 +244,11 @@ Feature "Birds",
           When "I construct #{numTrials} birds from that nest", ->
             babies = (Bird.fromNest(nest) for [0...numTrials])
           Then "most of those birds also prefers early nesting", ->
-            earlyNesters = babies.filter((b) -> b.nestingPreference() == Bird.EARLY)
+            earlyNesters =
+              babies.filter((b) -> b.nestingPreference() == Bird.EARLY)
             expectedEarly = numTrials * (1 - Bird.mutationRate)
-            earlyNesters.length.should.be.approximately expectedEarly, expectedEarly * 0.33
+            earlyNesters.length.should.be.approximately expectedEarly,
+              expectedEarly * 0.33
 
         Scenario "Construct a bird from a nest with two late parents", ->
           nest = null
@@ -262,18 +265,22 @@ Feature "Birds",
           When "I construct a bird from that nest", ->
             babies = (Bird.fromNest(nest) for [0...numTrials])
           Then "most of those birds also prefer late nesting", ->
-            lateNesters = babies.filter((b) -> b.nestingPreference() == Bird.LATE)
+            lateNesters =
+              babies.filter((b) -> b.nestingPreference() == Bird.LATE)
             expectedLate = numTrials * (1 - Bird.mutationRate)
-            lateNesters.length.should.be.approximately expectedLate, expectedLate * 0.33
+            lateNesters.length.should.be.approximately expectedLate,
+              expectedLate * 0.33
 
-        Scenario "Construct a bird from a nest with mixed parents (i.e., one early one late)", ->
+        Scenario "Construct a bird from a nest with mixed parents (i.e., \
+                          one early one late)", ->
           nest = null
           firstParent = null
           secondParent = null
           babies = null
           numTrials = 100
 
-          Given "I have mixed parents, i.e., one prefers early nesting, one late", ->
+          Given "I have mixed parents, i.e., one prefers early nesting, \
+                          one late", ->
             firstParent = new Bird(Bird.EARLY)
             secondParent = new Bird(Bird.LATE)
           And "a nest built by those parents", ->
@@ -281,8 +288,10 @@ Feature "Birds",
           When "I construct #{numTrials} birds from that nest", ->
             babies = (Bird.fromNest(nest) for [0...numTrials])
           Then "about half of those birds also prefer early nesting", ->
-            numEarly = (b for b in babies when b.nestingPreference() is Bird.EARLY)
-            numEarly.length.should.be.approximately(numTrials * 0.5, 0.33 * numTrials * 0.5)
+            numEarly = (b for b in babies when b.isEarly())
+            numEarly.length.should.be.approximately(numTrials * 0.5,
+              0.33 * numTrials * 0.5)
           Then "about half of those birds also prefer late nesting", ->
-            numLate = (b for b in babies when b.nestingPreference() is Bird.LATE)
-            numLate.length.should.be.approximately(numTrials * 0.5, 0.33 * numTrials * 0.5)
+            numLate = (b for b in babies when b.isLate())
+            numLate.length.should.be.approximately(numTrials * 0.5,
+              0.33 * numTrials * 0.5)

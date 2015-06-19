@@ -113,7 +113,8 @@ Feature "Nesting",
             expectedNests = Bird.nestingProbability * matingPairs.length
             nesting = new Nesting(matingPairs)
           Then "I will usually have about #{expectedNests} nests", ->
-            nesting.activeNests().length.should.be.approximately(expectedNests, 0.33 * expectedNests)
+            nesting.activeNests().length.should.be.approximately(expectedNests,
+              0.33 * expectedNests)
             #nesting.should.fail("WHY DOES THIS KEEP PRINTING NULL?")
 
     Feature "Can model egg collection",
@@ -128,9 +129,13 @@ Feature "Nesting",
           earlyNests = null
           lateNests = null
           nesting = null
-          numCollectedNests = Math.floor(numEarlyNests * Bird.collectionProbability)
-          numReleasedNests = Math.min(numCollectedNests, Bird.releaseCount)
-          numUncollectedNests = numEarlyNests - numCollectedNests
+          numCollectedNests =
+            Math.floor(numEarlyNests * Bird.collectionProbability)
+          numReleasedNests =
+            Math.min(numCollectedNests, Bird.releaseCount)
+          numUncollectedNests =
+            numEarlyNests - numCollectedNests
+          numActiveNests = numUncollectedNests + numLateNests
 
           Given "I construct #{numEarlyNests} early nests", ->
             earlyNests = (makeNest(Bird.EARLY) for [0...numEarlyNests])
@@ -143,8 +148,9 @@ Feature "Nesting",
             nesting.activeNests().length.should.eql totalNests
           When "Eggs are collected", ->
             nesting.collectEggs()
-          Then "I should have #{numUncollectedNests + numLateNests} active nests", ->
-            nesting.activeNests().length.should.eql numUncollectedNests + numLateNests
+          Then "I should have #{numUncollectedNests + numLateNests} \
+                    active nests", ->
+            nesting.activeNests().length.should.eql numActiveNests
           And "I should have #{numCollectedNests} collected nests", ->
             nesting.collectedNests().length.should.eql numCollectedNests
           And "I should have #{numReleasedNests} released nests", ->
@@ -188,9 +194,12 @@ Feature "Nesting",
             earlyNests = null
             lateNests = null
             nesting = null
-            numCollectedNests = Math.floor(numEarlyNests * Bird.collectionProbability)
-            numReleasedNests = Math.min(numCollectedNests, Bird.releaseCount)
-            numUncollectedNests = numEarlyNests - numCollectedNests
+            numCollectedNests =
+              Math.floor(numEarlyNests * Bird.collectionProbability)
+            numReleasedNests =
+              Math.min(numCollectedNests, Bird.releaseCount)
+            numUncollectedNests =
+              numEarlyNests - numCollectedNests
 
             Given "I construct #{numEarlyNests} early nests", ->
               earlyNests = (makeNest(Bird.EARLY) for [0...numEarlyNests])
@@ -205,7 +214,8 @@ Feature "Nesting",
               nesting.collectEggs()
             And "Birds abandon their nests", ->
               nesting.abandonNests()
-            Then "I should have #{numUncollectedNests + numLateNests} active nests", ->
+            Then "I should have #{numUncollectedNests + numLateNests} \
+                    active nests", ->
               nesting.activeNests().length.should.eql numLateNests
             And "I should have #{numCollectedNests} collected nests", ->
               nesting.collectedNests().length.should.eql numCollectedNests
@@ -221,9 +231,12 @@ Feature "Nesting",
             earlyNests = null
             lateNests = null
             nesting = null
-            numCollectedNests = Math.floor(numEarlyNests * Bird.collectionProbability)
-            numReleasedNests = Math.min(numCollectedNests, Bird.releaseCount)
-            numUncollectedNests = numEarlyNests - numCollectedNests
+            numCollectedNests =
+              Math.floor(numEarlyNests * Bird.collectionProbability)
+            numReleasedNests =
+              Math.min(numCollectedNests, Bird.releaseCount)
+            numUncollectedNests =
+              numEarlyNests - numCollectedNests
 
             Given "I construct #{numEarlyNests} early nests", ->
               earlyNests = (makeNest(Bird.EARLY) for [0...numEarlyNests])
@@ -238,7 +251,8 @@ Feature "Nesting",
               nesting.collectEggs()
             And "Birds abandon their nests", ->
               nesting.abandonNests()
-            Then "I should have #{numUncollectedNests + numLateNests} active nests", ->
+            Then "I should have #{numUncollectedNests + numLateNests} \
+                    active nests", ->
               nesting.activeNests().length.should.eql numLateNests
             And "I should have #{numCollectedNests} collected nests", ->
               nesting.collectedNests().length.should.eql numCollectedNests
@@ -279,7 +293,8 @@ Feature "Nesting",
           numEarlyNests = 37
           earlyNests = null
           nesting = null
-          numBirds = Math.min(Bird.releaseCount, numEarlyNests * Bird.collectionProbability)
+          numCollectedNests = numEarlyNests * Bird.collectionProbability
+          numBirds = Math.min(Bird.releaseCount, numCollectedNests)
           newBirds = null
 
           Given "I construct #{numEarlyNests} early nests", ->
@@ -304,7 +319,8 @@ Feature "Nesting",
           earlyNests = null
           lateNests = null
           nesting = null
-          numEarlyBirds = Math.min(Bird.releaseCount, numEarlyNests * Bird.collectionProbability)
+          numCollectedNests = numEarlyNests * Bird.collectionProbability
+          numEarlyBirds = Math.min(Bird.releaseCount, numCollectedNests)
           numLateBirds = Math.floor(numLateNests * Bird.eggConversionRate)
           numBirds = numEarlyBirds + numLateBirds
           newBirds = null
@@ -314,7 +330,8 @@ Feature "Nesting",
             earlyNests = (makeNest(Bird.EARLY) for [0...numEarlyNests])
           And "I construct #{numLateNests} late nests", ->
             lateNests = (makeNest(Bird.LATE) for [0...numLateNests])
-          And "I set the nesting to be the combination of both those nest sets", ->
+          And "I set the nesting to be the combination of \
+                  both of those nest sets", ->
             nesting = new Nesting([])
             nesting._activeNests = earlyNests.concat(lateNests)
           And "Eggs are collected", ->
@@ -326,11 +343,11 @@ Feature "Nesting",
           Then "there should be about #{numBirds} new birds", ->
             newBirds.length.should.be.approximately(numBirds, 0.33 * numBirds)
           And "#{numEarlyBirds} of those birds should be captive reared", ->
-            captiveReared = newBirds.filter((b) -> b.howReared() is Bird.CAPTIVE_REARED)
+            captiveReared = newBirds.filter((b) -> b.isCaptive())
             numCaptiveReared = captiveReared.length
             numCaptiveReared.should.eql numEarlyBirds
           And "the rest of those birds should be wild reared", ->
-            wildReared = newBirds.filter((b) -> b.howReared() is Bird.WILD_REARED)
+            wildReared = newBirds.filter((b) -> b.isWild())
             numWildReared = wildReared.length
             wildReared.length.should.eql (newBirds.length - numCaptiveReared)
 
@@ -360,11 +377,13 @@ Feature "Nesting",
           When "I run the reproduction cycle", ->
             newBirds = nesting.reproductionCycle()
           Then "I will usually have about #{expectedNumBirds} new birds", ->
-            newBirds.length.should.be.approximately(expectedNumBirds, 0.5 * expectedNumBirds)
+            newBirds.length.should.be.approximately(expectedNumBirds,
+              0.5 * expectedNumBirds)
           And "almost all of them will be late nesters", ->
-            lateNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.LATE)
+            lateNesters = newBirds.filter((b) -> b.isLate())
             expectedLate = expectedNumBirds * (1 - Bird.mutationRate)
-            lateNesters.length.should.be.approximately(expectedLate, expectedLate * 0.5)
+            lateNesters.length.should.be.approximately(expectedLate,
+              expectedLate * 0.5)
 
         Scenario "Large initial population is all early nesters", ->
           numInitialBirds = 100
@@ -373,7 +392,8 @@ Feature "Nesting",
           newBirds = null
           numPairs = numInitialBirds // 2
           numNests = numPairs * Bird.nestingProbability
-          expectedNumBirds = Math.min(numNests * Bird.collectionProbability, Bird.releaseCount)
+          expectedNumBirds = Math.min(numNests * Bird.collectionProbability,
+            Bird.releaseCount)
 
           Given "I construct a population of #{numInitialBirds} birds", ->
             Clock.reset()
@@ -387,11 +407,13 @@ Feature "Nesting",
           When "I run the reproduction cycle", ->
             newBirds = nesting.reproductionCycle()
           Then "I will usually have about #{expectedNumBirds} new birds", ->
-            newBirds.length.should.be.approximately(expectedNumBirds, 0.5 * expectedNumBirds)
+            newBirds.length.should.be.approximately(expectedNumBirds,
+              0.5 * expectedNumBirds)
           And "almost all of them will be early nesters", ->
-            earlyNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.EARLY)
+            earlyNesters = newBirds.filter((b) -> b.isEarly())
             expectedEarly = expectedNumBirds * (1 - Bird.mutationRate)
-            earlyNesters.length.should.be.approximately(expectedEarly, expectedEarly * 0.5)
+            earlyNesters.length.should.be.approximately(expectedEarly,
+              expectedEarly * 0.5)
 
         Scenario "Small initial population is all early nesters", ->
           # Small enough that the expected number of birds is less than
@@ -402,7 +424,8 @@ Feature "Nesting",
           newBirds = null
           numPairs = numInitialBirds // 2
           numNests = numPairs * Bird.nestingProbability
-          expectedNumBirds = Math.min(numNests * Bird.collectionProbability, Bird.releaseCount)
+          expectedNumBirds = Math.min(numNests * Bird.collectionProbability,
+            Bird.releaseCount)
 
           Given "I construct a population of #{numInitialBirds} birds", ->
             Clock.reset()
@@ -416,11 +439,13 @@ Feature "Nesting",
           When "I run the reproduction cycle", ->
             newBirds = nesting.reproductionCycle()
           Then "I will usually have about #{expectedNumBirds} new birds", ->
-            newBirds.length.should.be.approximately(expectedNumBirds, 0.5 * expectedNumBirds)
+            newBirds.length.should.be.approximately(expectedNumBirds,
+              0.5 * expectedNumBirds)
           And "almost all of them will be early nesters", ->
-            earlyNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.EARLY)
+            earlyNesters = newBirds.filter((b) -> b.isEarly())
             expectedEarly = expectedNumBirds * (1 - Bird.mutationRate)
-            earlyNesters.length.should.be.approximately(expectedEarly, expectedEarly * 0.5)
+            earlyNesters.length.should.be.approximately(expectedEarly,
+              expectedEarly * 0.5)
 
         Scenario "Mixed initial population of early and late nesters", ->
           numEarlyNesters = 200
@@ -440,23 +465,27 @@ Feature "Nesting",
           numLateNests = numAllLateNests
           numEarlyNests.should.eql 75
           numLateNests.should.eql 25
-          expectedCaptiveBirds = Math.min(numNests * Bird.collectionProbability, Bird.releaseCount)
+          expectedCaptiveBirds = Math.min(numNests * Bird.collectionProbability,
+            Bird.releaseCount)
           expectedCaptiveBirds.should.eql 6
           expectedWildBirds = numLateNests * Bird.eggConversionRate
           expectedWildBirds.should.eql 12.5
           expectedNumBirds = expectedCaptiveBirds + expectedWildBirds
           expectedNumBirds.should.eql 18.5
-          expectedEarlyNesters = expectedCaptiveBirds * (1 * 0.25 / 0.75 + 0.5 * 0.5 / 0.75)
+          expectedEarlyNesters = expectedCaptiveBirds *
+            (1 * 0.25 / 0.75 + 0.5 * 0.5 / 0.75)
           expectedEarlyNesters.should.eql (2 + 2)
-          expectedLateNesters = expectedWildBirds + (expectedCaptiveBirds - expectedEarlyNesters)
+          expectedLateNesters = expectedWildBirds +
+            (expectedCaptiveBirds - expectedEarlyNesters)
           expectedLateNesters.should.eql 14.5
-          expectedNumBirds.should.eql (expectedEarlyNesters + expectedLateNesters)
+          expectedNumBirds.should.eql (expectedEarlyNesters+expectedLateNesters)
 
           population = new Population(0)
           nesting = null
           newBirds = null
 
-          Given "I construct a population of #{numEarlyNesters} early birds and #{numLateNesters} late birds", ->
+          Given "I construct a population of #{numEarlyNesters} \
+                  early birds and #{numLateNesters} late birds", ->
             Clock.reset()
             population.addBird(new Bird(Bird.EARLY)) for [0...numEarlyNesters]
             population.addBird(new Bird(Bird.LATE)) for [0...numLateNesters]
@@ -469,13 +498,17 @@ Feature "Nesting",
           When "I run the reproduction cycle", ->
             newBirds = nesting.reproductionCycle()
           Then "I will usually have about #{expectedNumBirds} new birds", ->
-            newBirds.length.should.be.approximately(expectedNumBirds, 0.33 * expectedNumBirds)
-          And "approximately #{expectedEarlyNesters} should be early nesters", ->
-            earlyNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.EARLY)
-            earlyNesters.length.should.be.approximately(expectedEarlyNesters, expectedEarlyNesters * 0.5)
+            newBirds.length.should.be.approximately(expectedNumBirds,
+              0.33 * expectedNumBirds)
+          And "approximately #{expectedEarlyNesters} should be \
+                  early nesters", ->
+            earlyNesters = newBirds.filter((b) -> b.isEarly())
+            earlyNesters.length.should.be.approximately(expectedEarlyNesters,
+              expectedEarlyNesters * 0.5)
           And "approximately #{expectedLateNesters} should be late nesters", ->
-            lateNesters = newBirds.filter((b) -> b.nestingPreference() is Bird.LATE)
-            lateNesters.length.should.be.approximately(expectedLateNesters, expectedLateNesters * 0.5)
+            lateNesters = newBirds.filter((b) -> b.isLate())
+            lateNesters.length.should.be.approximately(expectedLateNesters,
+              expectedLateNesters * 0.5)
           And "the original birds are all #{Bird.pairingAge} years old", ->
             population.birds().every((b) -> b.age().should.eql Bird.pairingAge)
           And "the new birds are all 0 years old", ->
