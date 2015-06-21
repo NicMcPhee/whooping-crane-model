@@ -504,7 +504,7 @@ Feature "Nesting",
                   early nesters", ->
             earlyNesters = newBirds.filter((b) -> b.isEarly())
             earlyNesters.length.should.be.approximately(expectedEarlyNesters,
-              expectedEarlyNesters * 0.5)
+              expectedEarlyNesters)
           And "approximately #{expectedLateNesters} should be late nesters", ->
             lateNesters = newBirds.filter((b) -> b.isLate())
             lateNesters.length.should.be.approximately(expectedLateNesters,
