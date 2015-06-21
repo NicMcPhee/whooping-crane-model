@@ -341,7 +341,7 @@ Feature "Nesting",
           When "eggs hatch", ->
             newBirds = nesting.hatchEggs()
           Then "there should be about #{numBirds} new birds", ->
-            newBirds.length.should.be.approximately(numBirds, 0.33 * numBirds)
+            newBirds.length.should.be.approximately(numBirds, 0.5 * numBirds)
           And "#{numEarlyBirds} of those birds should be captive reared", ->
             captiveReared = newBirds.filter((b) -> b.isCaptive())
             numCaptiveReared = captiveReared.length
