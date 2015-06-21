@@ -255,7 +255,8 @@ Feature "Populations",
 
           population = null
           numBirds = 101
-          remainingBirds = numBirds * (1 - Bird.firstYearMortalityRate)
+          deceasedBirds = numBirds * Bird.firstYearMortalityRate
+          remainingBirds = numBirds - deceasedBirds
 
           Given "I construct a population of #{numBirds} birds", ->
             population = new Population(numBirds)
@@ -263,11 +264,16 @@ Feature "Populations",
             population.mateUnpairedBirds()
           When "I run a mortality pass", ->
             population.mortalityPass()
-          Then "there should be approximately #{remainingBirds} birds left", ->
+          Then "the number of remaining birds should be lower", ->
             birds = population.birds()
-            birds.length.should.be.approximately remainingBirds,
-              0.33 * remainingBirds
-          And "None are paired", ->
+            birds.length.should.be.below numBirds
+          And "there should be approximately #{deceasedBirds} fewer", ->
+            birds = population.birds()
+            numBirdsLeft = birds.length
+            numLostBirds = numBirds - numBirdsLeft
+            numLostBirds.should.be.approximately deceasedBirds,
+              0.33 * deceasedBirds
+          And "none are paired", ->
             population.matingPairs().length.should.eql 0
             birds = population.birds()
             population.unpairedBirds().length.should.eql birds.length
@@ -277,7 +283,8 @@ Feature "Populations",
 
           population = null
           numBirds = 101
-          remainingBirds = numBirds * (1 - Bird.matureMortalityRate)
+          deceasedBirds = numBirds * Bird.matureMortalityRate
+          remainingBirds = numBirds - deceasedBirds
 
           Given "I construct a population of #{numBirds} birds", ->
             population = new Population(numBirds)
@@ -287,11 +294,62 @@ Feature "Populations",
             population.mateUnpairedBirds()
           When "I run a mortality pass", ->
             population.mortalityPass()
-          Then "there should be approximately #{remainingBirds} birds left", ->
+          Then "the number of remaining birds should be lower", ->
             birds = population.birds()
-            birds.length.should.be.approximately remainingBirds,
-              0.33 * remainingBirds
-          And "None are paired", ->
+            birds.length.should.be.below numBirds
+          And "there should be approximately #{deceasedBirds} birds fewer", ->
+            birds = population.birds()
+            numBirdsLeft = birds.length
+            numLostBirds = numBirds - numBirdsLeft
+            # The 0.8 is stupidly high because 10 out of 100 is
+            # so low that you have to go down to 2 to get the p-value
+            # to drop below 0.05.
+            numLostBirds.should.be.approximately deceasedBirds,
+              0.8 * deceasedBirds
+          And "none are paired", ->
             population.matingPairs().length.should.eql 0
             birds = population.birds()
             population.unpairedBirds().length.should.eql birds.length
+
+        Scenario "A population of only newly paired birds", ->
+          before -> Clock.reset()
+
+          population = null
+          numBirds = 101
+          deceasedBirds = numBirds * Bird.matureMortalityRate
+          remainingBirds = numBirds - deceasedBirds
+          nestMortality =
+            Bird.matureMortalityRate +
+            (1 - Bird.matureMortalityRate) * Bird.matureMortalityRate
+          expectedPairs = (numBirds // 2) * (1 - nestMortality)
+          expectedSingles = 1 + (numBirds // 2) * nestMortality
+
+          Given "I construct a population of #{numBirds} birds", ->
+            population = new Population(numBirds)
+          And "I advance the clock #{Bird.pairingAge} years", ->
+            Clock.setYear(Bird.pairingAge)
+          And "I pair the unpaired birds", ->
+            population.mateUnpairedBirds()
+          When "I run a mortality pass", ->
+            population.mortalityPass()
+          Then "the number of remaining birds should be lower", ->
+            birds = population.birds()
+            birds.length.should.be.below numBirds
+          And "there should be approximately #{deceasedBirds} birds fewer", ->
+            birds = population.birds()
+            numBirdsLeft = birds.length
+            numLostBirds = numBirds - numBirdsLeft
+            # The 0.8 is stupidly high because 10 out of 100 is
+            # so low that you have to go down to 2 to get the p-value
+            # to drop below 0.05.
+            numLostBirds.should.be.approximately deceasedBirds,
+              0.8 * deceasedBirds
+          And "most are paired", ->
+            population.matingPairs().length.should.be.approximately(
+              expectedPairs, 0.33 * expectedPairs)
+            birds = population.birds()
+            # The 0.8 is stupidly high because 10 out of 100 is
+            # so low that you have to go down to 2 to get the p-value
+            # to drop below 0.05.
+            population.unpairedBirds().length.should.be.approximately(
+              expectedSingles, 0.8 * expectedSingles)

@@ -57,10 +57,17 @@ class Population
     @_unpairedBirds = @_unpairedBirds.filter((b) -> not (b in toMate))
     @_pairings = @_pairings.concat(chunk(toMate, 2))
 
-  # TODO: Don't we need to have paired birds undergo mortality as well?
   mortalityPass: ->
     @_unpairedBirds =
-      @_unpairedBirds.filter((b) -> b.dies())
+      @_unpairedBirds.filter((b) -> b.survives())
+    survivingPairs = []
+    for pair in @_pairings
+      survivors = pair.filter((b) -> b.survives())
+      if survivors.length == 2
+        survivingPairs.push(pair)
+      else if survivors.length == 1
+        @_unpairedBirds.push(survivors[0])
+    @_pairings = survivingPairs
 
   capToCarryingCapacity: ->
     # Undefined
