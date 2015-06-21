@@ -72,7 +72,7 @@ class Bird
     else
       Bird.EARLY
 
-  dies: ->
+  survives: ->
     mortality = Bird.matureMortalityRate
     if @age() == 0 then mortality = Bird.firstYearMortalityRate
     Math.random() >= mortality

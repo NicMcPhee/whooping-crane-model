@@ -295,3 +295,38 @@ Feature "Birds",
             numLate = (b for b in babies when b.isLate())
             numLate.length.should.be.approximately(numTrials * 0.5,
               0.33 * numTrials * 0.5)
+
+    Feature "Bird mortality",
+      "In order to model mortality",
+      "as a modeler",
+      "I need to be able to have birds die off probabilistically ", ->
+
+        Scenario "Mortality on newborn birds", ->
+          numBirds = 100
+          expectedSurvivors = numBirds * (1 - Bird.firstYearMortalityRate)
+          birds = null
+          survivors = null
+
+          Given "I have #{numBirds} newbord birds", ->
+            birds = (new Bird() for [0...numBirds])
+          When "I run a mortality pass on them", ->
+            survivors = birds.filter((b) -> b.survives())
+          Then "about #{expectedSurvivors} should survive", ->
+            survivors.length.should.be.approximately expectedSurvivors,
+              0.33 * expectedSurvivors
+
+        Scenario "Mortality on mature birds", ->
+          numBirds = 100
+          expectedSurvivors = numBirds * (1 - Bird.matureMortalityRate)
+          birds = null
+          survivors = null
+
+          Given "I have #{numBirds} newbord birds", ->
+            birds = (new Bird() for [0...numBirds])
+          And "I set the clock ahead a year", ->
+            Clock.incrementYear()
+          When "I run a mortality pass on them", ->
+            survivors = birds.filter((b) -> b.survives())
+          Then "about #{expectedSurvivors} should survive", ->
+            survivors.length.should.be.approximately expectedSurvivors,
+              0.33 * expectedSurvivors
