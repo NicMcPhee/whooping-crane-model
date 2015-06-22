@@ -206,3 +206,22 @@ Feature "Simulation",
         population = simulator.getPopulation()
         newborns = population.birds().filter((b) -> b.age() is 0)
         newborns.every((b) -> b.howReared() == Bird.WILD_REARED)
+
+    Scenario "Smoke test of 10 generations", ->
+      before -> Clock.reset()
+
+      numInitialBirds = 200
+      simulator = null
+
+      Given "I construct a population of #{numInitialBirds}, \
+              half early and half late", ->
+        population = new Population(0)
+        population.addBird(new Bird(Bird.EARLY)) for [0...numInitialBirds // 2]
+        population.addBird(new Bird(Bird.LATE)) for [0...numInitialBirds // 2]
+        simulator = new Simulator(population)
+      When "I run the simulation 10 generations", ->
+        simulator.advanceOneYear() for [0...10]
+      Then "I should still have some birds", ->
+        population = simulator.getPopulation()
+        # console.log(population)
+        population.birds().length.should.be.above 0
