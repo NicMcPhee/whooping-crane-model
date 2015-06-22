@@ -71,45 +71,41 @@ Feature "Simulation",
   "as a modeler",
   "I need to be able to run the annual simulation loop", ->
 
-    Scenario false, "Run one generation, all immature", ->
+    Scenario "Run one generation, all one-year old", ->
       before -> Clock.reset()
 
       numInitialBirds = 200
       simulator = null
-      expectedMortality = numInitialBirds * Bird.firstYearMortalityRate
+      expectedMortality = numInitialBirds * Bird.matureMortalityRate
       expectedNewPopSize = numInitialBirds - expectedMortality
-      expectedSurvivingNewBirds = -1000
 
       Given "I construct a population of #{numInitialBirds} \
               early nesting birds", ->
         population = new Population(0)
         population.addBird(new Bird(Bird.EARLY)) for [0...numInitialBirds]
         simulator = new Simulator(population)
-      And "I advance the clock #{Bird.pairingAge} years", ->
-        Clock.setYear(Bird.pairingAge)
-        Clock.currentYear.should.eql Bird.pairingAge
       When "I run the simulation for one year", ->
         simulator.advanceOneYear()
       Then "the clock has advanced a year", ->
-        Clock.currentYear.should.eql (Bird.pairingAge+1)
+        Clock.currentYear.should.eql 1
       And "the population size is approximately #{expectedNewPopSize}", ->
         population = simulator.getPopulation()
         population.birds().length.should.be.approximately expectedNewPopSize,
           0.1 * expectedNewPopSize
-      And "the number of new birds is \
-              approximately #{expectedSurvivingNewBirds}", ->
+      And "no birds are paired", ->
         population = simulator.getPopulation()
-        console.log(population.birds().length)
-        ages = (b.age() for b in population.birds())
-        newBirds = population.birds().filter((b) -> b.age() == 0)
-        console.log(newBirds.length)
-        newBirds.length.should.be.approximately expectedSurvivingNewBirds,
-          expectedSurvivingNewBirds * 0.33
+        population.matingPairs().length.should.eql 0
+      And "all birds are one year old", ->
+        population = simulator.getPopulation()
+        birds = population.birds()
+        for b in birds
+          b.age().should.eql 1
 
-    Scenario false, "Run one generation, all mature early nesters", ->
+    Scenario "Run one generation, all mature early nesters", ->
       before -> Clock.reset()
 
       numInitialBirds = 200
+      numInitialNests = numInitialBirds // 2
       simulator = null
       expectedNumNewBirds = 6
       expectedSurvivingNewBirds =
@@ -119,6 +115,12 @@ Feature "Simulation",
         numInitialBirds * Bird.matureMortalityRate
       expectedNewPopSize =
         numInitialBirds + expectedNumNewBirds - expectedMortality
+      brokenNestProbability =
+        Bird.matureMortalityRate +
+        (1 - Bird.matureMortalityRate) * Bird.matureMortalityRate
+      expectedBrokenNests = numInitialNests * brokenNestProbability
+      expectedRemainingNests = numInitialNests - expectedBrokenNests
+      expectedUnpairedBirds = expectedSurvivingNewBirds + expectedBrokenNests
 
       Given "I construct a population of #{numInitialBirds} \
               early nesting birds", ->
@@ -136,12 +138,71 @@ Feature "Simulation",
         population = simulator.getPopulation()
         population.birds().length.should.be.approximately expectedNewPopSize,
           0.1 * expectedNewPopSize
-      And "the number of new birds is \
-              approximately #{expectedSurvivingNewBirds}", ->
+      And "most of the birds are paired", ->
         population = simulator.getPopulation()
-        console.log(population.birds().length)
-        ages = (b.age() for b in population.birds())
-        newBirds = population.birds().filter((b) -> b.age() == 0)
-        console.log(newBirds.length)
-        newBirds.length.should.be.approximately expectedSurvivingNewBirds,
-          expectedSurvivingNewBirds * 0.33
+        population.matingPairs().length.should.be.approximately(
+          expectedRemainingNests, 0.33 * expectedRemainingNests)
+        population.unpairedBirds().length.should.be.approximately(
+          expectedUnpairedBirds, 0.33 * expectedUnpairedBirds)
+      And "about #{expectedNumNewBirds} birds to have age 0", ->
+        population = simulator.getPopulation()
+        newborns = population.birds().filter((b) -> b.age() is 0)
+        newborns.length.should.be.approximately expectedSurvivingNewBirds, 2
+      And "all newborns are captive born", ->
+        population = simulator.getPopulation()
+        newborns = population.birds().filter((b) -> b.age() is 0)
+        newborns.every((b) -> b.howReared() == Bird.CAPTIVE_REARED)
+
+    Scenario "Run one generation, all mature late nesters", ->
+      before -> Clock.reset()
+
+      numInitialBirds = 200
+      numInitialNests = numInitialBirds // 2
+      simulator = null
+      expectedNumNewBirds =
+        numInitialNests * Bird.nestingProbability * Bird.eggConversionRate
+      expectedSurvivingNewBirds =
+        expectedNumNewBirds * (1 - Bird.firstYearMortalityRate)
+      expectedMortality =
+        expectedNumNewBirds * Bird.firstYearMortalityRate +
+        numInitialBirds * Bird.matureMortalityRate
+      expectedNewPopSize =
+        numInitialBirds + expectedNumNewBirds - expectedMortality
+      brokenNestProbability =
+        Bird.matureMortalityRate +
+        (1 - Bird.matureMortalityRate) * Bird.matureMortalityRate
+      expectedBrokenNests = numInitialNests * brokenNestProbability
+      expectedRemainingNests = numInitialNests - expectedBrokenNests
+      expectedUnpairedBirds = expectedSurvivingNewBirds + expectedBrokenNests
+
+      Given "I construct a population of #{numInitialBirds} \
+              early nesting birds", ->
+        population = new Population(0)
+        population.addBird(new Bird(Bird.LATE)) for [0...numInitialBirds]
+        simulator = new Simulator(population)
+      And "I advance the clock #{Bird.pairingAge} years", ->
+        Clock.setYear(Bird.pairingAge)
+        Clock.currentYear.should.eql Bird.pairingAge
+      When "I run the simulation for one year", ->
+        simulator.advanceOneYear()
+      Then "the clock has advanced a year", ->
+        Clock.currentYear.should.eql (Bird.pairingAge+1)
+      And "the population size is approximately #{expectedNewPopSize}", ->
+        population = simulator.getPopulation()
+        population.birds().length.should.be.approximately expectedNewPopSize,
+          0.1 * expectedNewPopSize
+      And "most of the birds are paired", ->
+        population = simulator.getPopulation()
+        population.matingPairs().length.should.be.approximately(
+          expectedRemainingNests, 0.33 * expectedRemainingNests)
+        population.unpairedBirds().length.should.be.approximately(
+          expectedUnpairedBirds, 0.33 * expectedUnpairedBirds)
+      And "about #{expectedSurvivingNewBirds} birds to have age 0", ->
+        population = simulator.getPopulation()
+        newborns = population.birds().filter((b) -> b.age() is 0)
+        newborns.length.should.be.approximately expectedSurvivingNewBirds,
+          0.5 * expectedSurvivingNewBirds
+      And "all newborns are wild born", ->
+        population = simulator.getPopulation()
+        newborns = population.birds().filter((b) -> b.age() is 0)
+        newborns.every((b) -> b.howReared() == Bird.WILD_REARED)
