@@ -28,6 +28,7 @@ class Simulator
     @population.addBird(b) for b in newBirds
     @population.mortalityPass()
     @population.capToCarryingCapacity()
+    return
 
   getPopulation: () -> @population
 
