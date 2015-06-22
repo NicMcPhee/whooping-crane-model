@@ -85,10 +85,13 @@ class RickshawStripChart
   updatePopulation: (year) ->
     numPairs = @numCranes / 2
     numEggs = numPairs * @clutchSize
-    captive_babies = numEggs * @percentageEggsToTake * @jiggle(@captiveEggSurvival)
+    captive_babies =
+      numEggs * @percentageEggsToTake * @jiggle(@captiveEggSurvival)
     #console.log(captive_babies)
-    wild_babies = numEggs * (1-@percentageEggsToTake) * @jiggle(@wildEggSurvival)
-    @numCranes = @numCranes * (1-@jiggle(@overallMortalityRate)) + captive_babies + wild_babies
+    wild_babies =
+      numEggs * (1-@percentageEggsToTake) * @jiggle(@wildEggSurvival)
+    @numCranes =
+      @numCranes*(1-@jiggle(@overallMortalityRate))+captive_babies+wild_babies
     if @numCranes <= 0
       @numCranes = 0
     if @numCranes > @carryingCapacity

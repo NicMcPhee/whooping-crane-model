@@ -47,7 +47,7 @@ module.exports = (grunt)->
           timeout: 3000
           ignoreLeaks: false
           ui: 'bdd'
-          reporter: 'spec'
+          reporter: 'dot' # 'progress' # 'min' # 'dot' # 'spec'
     watch:
       options:
         spawn: false
@@ -90,4 +90,3 @@ module.exports = (grunt)->
     'compile'
     'test'
   ]
-

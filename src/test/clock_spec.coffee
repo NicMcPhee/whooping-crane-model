@@ -2,7 +2,7 @@
 
 require 'mocha-cakes'
 
-whooping-crane-model = require '../lib/whooping-crane-model.js'
+Clock = require '../lib/clock'
 
 ###
 ======== A Handy Little Mocha-cakes Reference ========
@@ -62,18 +62,23 @@ Should assertions:
   user.should.be.a('object').and.have.property('name', 'tj')
 ###
 
-Feature "New Feature",
-  "In order to use cool feature",
-  "as a new user",
-  "I want do include this", ->
+Feature "Global clock resets",
+  "In order to be able to track bird ages",
+  "as a modeler",
+  "I need a shared clock that I can reset", ->
 
-    Scenario "Singing", ->
+    Scenario "Global clock is zero after a reset", ->
 
-      voice = null
+      Given "I reset the global clock", ->
+        Clock.reset()
+      Then "the current year is 0", ->
+        Clock.currentYear.should.eql 0
 
-      Given "I am a awesome singing", ->
-      When "I sing", ->
-        voice = whooping-crane-model.awesome()
-      Then "it should sound awesome", ->
-        voice.should.eql 'awesome'
+    Scenario "Global clock increments correctly", ->
 
+      Given "I reset the global clock", ->
+        Clock.reset()
+      When "I increment the clock once", ->
+        Clock.incrementYear()
+      Then "The current year is 1", ->
+        Clock.currentYear.should.eql 1
