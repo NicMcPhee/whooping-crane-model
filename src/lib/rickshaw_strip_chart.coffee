@@ -1,23 +1,27 @@
+'use strict'
+
+Simulator = require './simulator'
+Population = require './population'
+
 class RickshawStripChart
-  tickLength: 10
   values: null
   year: 2015
-  initialNumCranes: null
-  carryingCapacity: 1000
-  numCranes: null
-  percentageEggsToTake: null
-  captiveEggSurvival: null
-  wildEggSurvival: null
-  overallMortalityRate: null
-  clutchSize: 2
   numYears: 100
   runNumber: 0
-  chart: null
-  hoverDetail: null
-  offset_param: null
+  numRuns: 50
+
+  tickLength: 1
   isRunning: false
   hasStarted: false
   notDone: true
+
+  # initialNumCranes: null
+  # carryingCapacity: 1000
+  # percentageEggsToTake: null
+  # captiveEggSurvival: null
+  # wildEggSurvival: null
+  # overallMortalityRate: null
+  # clutchSize: 2
 
   constructor: ->
     @values = []
@@ -37,10 +41,6 @@ class RickshawStripChart
 
   start: ->
     @initialNumCranes = Number($("#num_cranes").val())
-    @percentageEggsToTake = Number($("#percentage_eggs_to_take").val())
-    @captiveEggSurvival = Number($('#captive_egg_survival').val())
-    @wildEggSurvival = Number($('#wild_egg_survival').val())
-    @overallMortalityRate = Number($('#overall_mortality_rate').val())
     @values.length = 0
     @runNumber = 0
     @hasStarted = true
@@ -76,47 +76,29 @@ class RickshawStripChart
   drawChart: ->
     @chart.render()
 
-  jiggle: (v) ->
-    newV = v + 0.1 * v * (Math.random() * 2 - 1)
-    newV = 0 if newV < 0
-    newV = 1 if newV > 1
-    return(newV)
-
-  updatePopulation: (year) ->
-    numPairs = @numCranes / 2
-    numEggs = numPairs * @clutchSize
-    captive_babies =
-      numEggs * @percentageEggsToTake * @jiggle(@captiveEggSurvival)
-    #console.log(captive_babies)
-    wild_babies =
-      numEggs * (1-@percentageEggsToTake) * @jiggle(@wildEggSurvival)
-    @numCranes =
-      @numCranes*(1-@jiggle(@overallMortalityRate))+captive_babies+wild_babies
-    if @numCranes <= 0
-      @numCranes = 0
-    if @numCranes > @carryingCapacity
-      @numCranes = @carryingCapacity
-    # console.log(@numCranes)
-    return(@numCranes)
-
   extendData: ->
     years = [@year...(@year+@numYears)]
-    @numCranes = @initialNumCranes
-    counts = years.map ((yr) => @updatePopulation(yr))
-    firstZero = counts.indexOf(0)
-    if firstZero > -1
-      counts = counts[..firstZero]
-    newData = counts.map (v, i) => { x: @year+i, y: v }
+    population = new Population(@initialNumCranes)
+    simulator = new Simulator(population)
+    entries = []
+    for year in years
+      popSize = simulator.getPopulation().birds().length
+      entry = { x: year, y: popSize }
+      entries.push(entry)
+      if popSize <= 0
+        break
+      simulator.advanceOneYear()
     @values.push({
       name: "Run ##{@runNumber}"
       color: "rgba(0, 0, 0, 0.1)"
-      data: newData})
+      data: entries
+      })
 
   tick: =>
     @extendData()
     @drawChart()
     @runNumber = @runNumber + 1
-    @notDone = @runNumber < 100
+    @notDone = @runNumber < @numRuns
     if not @notDone
       @isRunning = false
       @hasStarted = false
