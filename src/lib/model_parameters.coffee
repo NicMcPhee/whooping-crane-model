@@ -18,5 +18,7 @@ class ModelParameters
   @releaseCount: 6
   @eggConversionRate: 0.5
   @mutationRate: 0.001
+  @firstYearMortalityRate: 0.6
+  @matureMortalityRate: 0.1
 
 module.exports = ModelParameters

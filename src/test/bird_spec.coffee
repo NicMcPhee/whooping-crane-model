@@ -304,7 +304,7 @@ Feature "Birds",
 
         Scenario "Mortality on newborn birds", ->
           numBirds = 100
-          expectedSurvivors = numBirds * (1 - Bird.firstYearMortalityRate)
+          expectedSurvivors = numBirds * (1 - ModelParameters.firstYearMortalityRate)
           birds = null
           survivors = null
 
@@ -318,7 +318,7 @@ Feature "Birds",
 
         Scenario "Mortality on mature birds", ->
           numBirds = 100
-          expectedSurvivors = numBirds * (1 - Bird.matureMortalityRate)
+          expectedSurvivors = numBirds * (1 - ModelParameters.matureMortalityRate)
           birds = null
           survivors = null
 

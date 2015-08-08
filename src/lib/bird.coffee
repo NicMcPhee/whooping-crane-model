@@ -22,8 +22,8 @@ class Bird
   # @releaseCount: 6
   # @eggConversionRate: 0.5 # Unclear if we have the right number here
   # @mutationRate: 0.001 # From the bat modeling paper
-  @firstYearMortalityRate: 0.6
-  @matureMortalityRate: 0.1
+  # @firstYearMortalityRate: 0.6
+  # @matureMortalityRate: 0.1
 
   @EARLY = 0
   @LATE = 1
@@ -74,8 +74,8 @@ class Bird
       Bird.EARLY
 
   survives: ->
-    mortality = Bird.matureMortalityRate
-    if @age() == 0 then mortality = Bird.firstYearMortalityRate
+    mortality = ModelParameters.matureMortalityRate
+    if @age() == 0 then mortality = ModelParameters.firstYearMortalityRate
     Math.random() >= mortality
 
 module.exports = Bird

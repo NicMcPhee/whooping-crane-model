@@ -54,6 +54,10 @@ class RickshawStripChart
     ModelParameters.eggConversionRate = eggConversionRate
     mutationRate = Number($("#mutation_rate").val())
     ModelParameters.mutationRate = mutationRate
+    firstYearMortalityRate = Number($("#first_year_mortality_rate").val())
+    ModelParameters.firstYearMortalityRate = firstYearMortalityRate
+    matureMortalityRate = Number($("#mature_mortality_rate").val())
+    ModelParameters.matureMortalityRate = matureMortalityRate
     @values.length = 0
     @runNumber = 0
     @hasStarted = true

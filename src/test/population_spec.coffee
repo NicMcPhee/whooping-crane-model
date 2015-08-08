@@ -256,7 +256,7 @@ Feature "Populations",
 
           population = null
           numBirds = 101
-          deceasedBirds = numBirds * Bird.firstYearMortalityRate
+          deceasedBirds = numBirds * ModelParameters.firstYearMortalityRate
           remainingBirds = numBirds - deceasedBirds
 
           Given "I construct a population of #{numBirds} birds", ->
@@ -284,7 +284,7 @@ Feature "Populations",
 
           population = null
           numBirds = 101
-          deceasedBirds = numBirds * Bird.matureMortalityRate
+          deceasedBirds = numBirds * ModelParameters.matureMortalityRate
           remainingBirds = numBirds - deceasedBirds
 
           Given "I construct a population of #{numBirds} birds", ->
@@ -317,11 +317,11 @@ Feature "Populations",
 
           population = null
           numBirds = 101
-          deceasedBirds = numBirds * Bird.matureMortalityRate
+          deceasedBirds = numBirds * ModelParameters.matureMortalityRate
           remainingBirds = numBirds - deceasedBirds
           nestMortality =
-            Bird.matureMortalityRate +
-            (1 - Bird.matureMortalityRate) * Bird.matureMortalityRate
+            ModelParameters.matureMortalityRate +
+            (1 - ModelParameters.matureMortalityRate) * ModelParameters.matureMortalityRate
           expectedPairs = (numBirds // 2) * (1 - nestMortality)
           expectedSingles = 1 + (numBirds // 2) * nestMortality
 
