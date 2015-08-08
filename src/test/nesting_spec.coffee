@@ -133,7 +133,7 @@ Feature "Nesting",
           numCollectedNests =
             Math.floor(numEarlyNests * ModelParameters.collectionProbability)
           numReleasedNests =
-            Math.min(numCollectedNests, Bird.releaseCount)
+            Math.min(numCollectedNests, ModelParameters.releaseCount)
           numUncollectedNests =
             numEarlyNests - numCollectedNests
           numActiveNests = numUncollectedNests + numLateNests
@@ -198,7 +198,7 @@ Feature "Nesting",
             numCollectedNests =
               Math.floor(numEarlyNests * ModelParameters.collectionProbability)
             numReleasedNests =
-              Math.min(numCollectedNests, Bird.releaseCount)
+              Math.min(numCollectedNests, ModelParameters.releaseCount)
             numUncollectedNests =
               numEarlyNests - numCollectedNests
 
@@ -235,7 +235,7 @@ Feature "Nesting",
             numCollectedNests =
               Math.floor(numEarlyNests * ModelParameters.collectionProbability)
             numReleasedNests =
-              Math.min(numCollectedNests, Bird.releaseCount)
+              Math.min(numCollectedNests, ModelParameters.releaseCount)
             numUncollectedNests =
               numEarlyNests - numCollectedNests
 
@@ -295,7 +295,7 @@ Feature "Nesting",
           earlyNests = null
           nesting = null
           numCollectedNests = numEarlyNests * ModelParameters.collectionProbability
-          numBirds = Math.min(Bird.releaseCount, numCollectedNests)
+          numBirds = Math.min(ModelParameters.releaseCount, numCollectedNests)
           newBirds = null
 
           Given "I construct #{numEarlyNests} early nests", ->
@@ -321,7 +321,7 @@ Feature "Nesting",
           lateNests = null
           nesting = null
           numCollectedNests = numEarlyNests * ModelParameters.collectionProbability
-          numEarlyBirds = Math.min(Bird.releaseCount, numCollectedNests)
+          numEarlyBirds = Math.min(ModelParameters.releaseCount, numCollectedNests)
           numLateBirds = Math.floor(numLateNests * Bird.eggConversionRate)
           numBirds = numEarlyBirds + numLateBirds
           newBirds = null
@@ -394,7 +394,7 @@ Feature "Nesting",
           numPairs = numInitialBirds // 2
           numNests = numPairs * ModelParameters.nestingProbability
           expectedNumBirds = Math.min(numNests * ModelParameters.collectionProbability,
-            Bird.releaseCount)
+            ModelParameters.releaseCount)
 
           Given "I construct a population of #{numInitialBirds} birds", ->
             Clock.reset()
@@ -418,7 +418,7 @@ Feature "Nesting",
 
         Scenario "Small initial population is all early nesters", ->
           # Small enough that the expected number of birds is less than
-          # Bird.releaseCount
+          # ModelParameters.releaseCount
           numInitialBirds = 32
           population = new Population(0)
           nesting = null
@@ -426,7 +426,7 @@ Feature "Nesting",
           numPairs = numInitialBirds // 2
           numNests = numPairs * ModelParameters.nestingProbability
           expectedNumBirds = Math.min(numNests * ModelParameters.collectionProbability,
-            Bird.releaseCount)
+            ModelParameters.releaseCount)
 
           Given "I construct a population of #{numInitialBirds} birds", ->
             Clock.reset()
@@ -467,7 +467,7 @@ Feature "Nesting",
           numEarlyNests.should.eql 75
           numLateNests.should.eql 25
           expectedCaptiveBirds = Math.min(numNests * ModelParameters.collectionProbability,
-            Bird.releaseCount)
+            ModelParameters.releaseCount)
           expectedCaptiveBirds.should.eql 6
           expectedWildBirds = numLateNests * Bird.eggConversionRate
           expectedWildBirds.should.eql 12.5

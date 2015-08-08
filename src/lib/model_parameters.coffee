@@ -15,5 +15,6 @@ class ModelParameters
   @pairingAge: 4
   @nestingProbability: 0.5
   @collectionProbability: 0.5
+  @releaseCount: 6
 
 module.exports = ModelParameters

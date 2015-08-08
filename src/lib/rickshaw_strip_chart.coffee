@@ -48,6 +48,8 @@ class RickshawStripChart
     ModelParameters.nestingProbability = nestingProbability
     collectionProbability = Number($("#collection_probability").val())
     ModelParameters.collectionProbability = collectionProbability
+    releaseCount = Number($("#release_count").val())
+    ModelParameters.releaseCount = releaseCount
     @values.length = 0
     @runNumber = 0
     @hasStarted = true

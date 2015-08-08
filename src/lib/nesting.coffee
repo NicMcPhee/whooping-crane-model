@@ -52,7 +52,7 @@ class Nesting
     @_collectedNests = earlyNests[0...numToCollect]
     @_activeNests = @_activeNests.filter((n) => n not in @_collectedNests)
     # Only some collected eggs will be released back into the wild.
-    @_releasedNests = @_collectedNests[0...Bird.releaseCount]
+    @_releasedNests = @_collectedNests[0...ModelParameters.releaseCount]
 
   abandonNests: () ->
     @_abandonedNests = @_activeNests.filter(
