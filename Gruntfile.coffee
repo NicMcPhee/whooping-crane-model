@@ -42,10 +42,6 @@ module.exports = (grunt)->
       dev:
         src: ['out/lib/*.js']
         dest: 'dist/cranes.js'
-      production:
-        debug: false
-        src: ['out/lib/*.js']
-        dest: 'dist/cranes.js'
     simplemocha:
       all:
         src: [
