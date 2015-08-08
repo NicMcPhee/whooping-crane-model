@@ -36,6 +36,16 @@ module.exports = (grunt)->
         src: ['**/*.coffee']
         dest: 'out/test/'
         ext: '.js'
+    browserify:
+      options:
+        debug: true
+      dev:
+        src: ['out/lib/*.js']
+        dest: 'dist/cranes.js'
+      production:
+        debug: false
+        src: ['out/lib/*.js']
+        dest: 'dist/cranes.js'
     simplemocha:
       all:
         src: [
@@ -86,7 +96,12 @@ module.exports = (grunt)->
     'simplemocha'
   ]
 
+  grunt.registerTask 'bundle', [
+    'browserify'
+  ]
+
   grunt.registerTask 'default', [
     'compile'
     'test'
+    'bundle'
   ]
