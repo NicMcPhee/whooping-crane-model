@@ -11,8 +11,9 @@ Licensed under the MIT license.
 
 'use strict'
 
-Bird = require '../lib/bird'
-Nest = require '../lib/nest'
+ModelParameters = require './model_parameters'
+Bird = require './bird'
+Nest = require './nest'
 
 # Move shuffle, chunk to a util file
 
@@ -30,7 +31,7 @@ class Nesting
 
   constructor: (matingPairs) ->
     nestingPairs = matingPairs.filter(
-      (pr) -> Math.random() < Bird.nestingProbability)
+      (pr) -> Math.random() < ModelParameters.nestingProbability)
     @_activeNests = (new Nest(p) for p in nestingPairs)
     @_collectedNests = []
     @_releasedNests = []

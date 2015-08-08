@@ -2,6 +2,7 @@
 
 require 'mocha-cakes'
 
+ModelParameters = require '../lib/model_parameters'
 Clock = require '../lib/clock'
 Bird = require '../lib/bird'
 Population = require '../lib/population'
@@ -104,13 +105,13 @@ Feature "Nesting",
 
           Given "I construct a population of #{numBirds} birds", ->
             population = new Population(100)
-          And "I set the clock ahead #{Bird.pairingAge} years", ->
-            Clock.setYear(Bird.pairingAge)
+          And "I set the clock ahead #{ModelParameters.pairingAge} years", ->
+            Clock.setYear(ModelParameters.pairingAge)
           And "I create breeding pairs", ->
             population.mateUnpairedBirds()
           When "I construct nests from the breeding pairs", ->
             matingPairs = population.matingPairs()
-            expectedNests = Bird.nestingProbability * matingPairs.length
+            expectedNests = ModelParameters.nestingProbability * matingPairs.length
             nesting = new Nesting(matingPairs)
           Then "I will usually have about #{expectedNests} nests", ->
             nesting.activeNests().length.should.be.approximately(expectedNests,
@@ -362,14 +363,14 @@ Feature "Nesting",
           nesting = null
           newBirds = null
           numPairs = numInitialBirds // 2
-          numNests = numPairs * Bird.nestingProbability
+          numNests = numPairs * ModelParameters.nestingProbability
           expectedNumBirds = numNests * Bird.eggConversionRate
 
           Given "I construct a population of #{numInitialBirds} birds", ->
             Clock.reset()
             population.addBird(new Bird(Bird.LATE)) for [0...numInitialBirds]
-          And "I set the clock ahead #{Bird.pairingAge} years", ->
-            Clock.setYear(Bird.pairingAge)
+          And "I set the clock ahead #{ModelParameters.pairingAge} years", ->
+            Clock.setYear(ModelParameters.pairingAge)
           And "I create mating pairs", ->
             population.mateUnpairedBirds()
           And "I create a nesting environment", ->
@@ -391,15 +392,15 @@ Feature "Nesting",
           nesting = null
           newBirds = null
           numPairs = numInitialBirds // 2
-          numNests = numPairs * Bird.nestingProbability
+          numNests = numPairs * ModelParameters.nestingProbability
           expectedNumBirds = Math.min(numNests * Bird.collectionProbability,
             Bird.releaseCount)
 
           Given "I construct a population of #{numInitialBirds} birds", ->
             Clock.reset()
             population.addBird(new Bird(Bird.EARLY)) for [0...numInitialBirds]
-          And "I set the clock ahead #{Bird.pairingAge} years", ->
-            Clock.setYear(Bird.pairingAge)
+          And "I set the clock ahead #{ModelParameters.pairingAge} years", ->
+            Clock.setYear(ModelParameters.pairingAge)
           And "I create mating pairs", ->
             population.mateUnpairedBirds()
           And "I create a nesting environment", ->
@@ -423,15 +424,15 @@ Feature "Nesting",
           nesting = null
           newBirds = null
           numPairs = numInitialBirds // 2
-          numNests = numPairs * Bird.nestingProbability
+          numNests = numPairs * ModelParameters.nestingProbability
           expectedNumBirds = Math.min(numNests * Bird.collectionProbability,
             Bird.releaseCount)
 
           Given "I construct a population of #{numInitialBirds} birds", ->
             Clock.reset()
             population.addBird(new Bird(Bird.EARLY)) for [0...numInitialBirds]
-          And "I set the clock ahead #{Bird.pairingAge} years", ->
-            Clock.setYear(Bird.pairingAge)
+          And "I set the clock ahead #{ModelParameters.pairingAge} years", ->
+            Clock.setYear(ModelParameters.pairingAge)
           And "I create mating pairs", ->
             population.mateUnpairedBirds()
           And "I create a nesting environment", ->
@@ -452,7 +453,7 @@ Feature "Nesting",
           numLateNesters = 200
           numInitialBirds = numEarlyNesters + numLateNesters
           numPairs = numInitialBirds // 2
-          numNests = numPairs * Bird.nestingProbability
+          numNests = numPairs * ModelParameters.nestingProbability
           numNests.should.eql 100
           numAllEarlyNests = 0.25 * numNests
           numAllLateNests = 0.25 * numNests
@@ -489,8 +490,8 @@ Feature "Nesting",
             Clock.reset()
             population.addBird(new Bird(Bird.EARLY)) for [0...numEarlyNesters]
             population.addBird(new Bird(Bird.LATE)) for [0...numLateNesters]
-          And "I set the clock ahead #{Bird.pairingAge} years", ->
-            Clock.setYear(Bird.pairingAge)
+          And "I set the clock ahead #{ModelParameters.pairingAge} years", ->
+            Clock.setYear(ModelParameters.pairingAge)
           And "I create mating pairs", ->
             population.mateUnpairedBirds()
           And "I create a nesting environment", ->
@@ -509,7 +510,7 @@ Feature "Nesting",
             lateNesters = newBirds.filter((b) -> b.isLate())
             lateNesters.length.should.be.approximately(expectedLateNesters,
               expectedLateNesters * 0.5)
-          And "the original birds are all #{Bird.pairingAge} years old", ->
-            population.birds().every((b) -> b.age().should.eql Bird.pairingAge)
+          And "the original birds are all #{ModelParameters.pairingAge} years old", ->
+            population.birds().every((b) -> b.age().should.eql ModelParameters.pairingAge)
           And "the new birds are all 0 years old", ->
             newBirds.every((b) -> b.age().should.eql 0)

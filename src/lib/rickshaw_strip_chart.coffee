@@ -1,5 +1,6 @@
 'use strict'
 
+ModelParameters = require './model_parameters'
 Simulator = require './simulator'
 Population = require './population'
 
@@ -41,6 +42,10 @@ class RickshawStripChart
 
   start: ->
     @initialNumCranes = Number($("#num_cranes").val())
+    pairingAge = Number($("#pairing_age").val())
+    ModelParameters.pairingAge = pairingAge
+    nestingProbability = Number($("#nesting_probability").val())
+    ModelParameters.nestingProbability = nestingProbability
     @values.length = 0
     @runNumber = 0
     @hasStarted = true

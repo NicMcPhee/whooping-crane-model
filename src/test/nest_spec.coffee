@@ -2,6 +2,7 @@
 
 require 'mocha-cakes'
 
+ModelParameters = require '../lib/model_parameters'
 Bird = require '../lib/bird'
 Nest = require '../lib/nest'
 

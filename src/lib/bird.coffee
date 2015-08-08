@@ -11,12 +11,13 @@ Licensed under the MIT license.
 
 'use strict'
 
+ModelParameters = require './model_parameters'
 Clock = require './clock'
 
 class Bird
   @uuidFactory: require('uuid')
-  @pairingAge: 4
-  @nestingProbability: 0.5
+  # @pairingAge: 4
+  # @nestingProbability: 0.5
   @collectionProbability: 0.5
   @releaseCount: 6
   @eggConversionRate: 0.5 # Unclear if we have the right number here
@@ -52,7 +53,7 @@ class Bird
 
   age: -> Clock.currentYear - @birthYear
 
-  canMate: -> @age() >= Bird.pairingAge
+  canMate: -> @age() >= ModelParameters.pairingAge
 
   nestingPreference: -> @_nestingPreference
 

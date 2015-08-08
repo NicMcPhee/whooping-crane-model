@@ -2,6 +2,7 @@
 
 require 'mocha-cakes'
 
+ModelParameters = require '../lib/model_parameters'
 Clock = require '../lib/clock'
 Nest = require '../lib/nest'
 Bird = require '../lib/bird'
@@ -163,7 +164,7 @@ Feature "Birds",
           Given "I construct a bird with no birth year", ->
             bird = new Bird()
           When "I increment the clock 'pairingAge'+1 years", ->
-            Clock.incrementYear() for [0...Bird.pairingAge+1]
+            Clock.incrementYear() for [0...ModelParameters.pairingAge+1]
           Then "the bird should be able to mate", ->
             bird.canMate().should.be.true
 
@@ -172,7 +173,7 @@ Feature "Birds",
           Given "I construct a bird with no birth year", ->
             bird = new Bird()
           When "I increment the clock 'pairingAge' years", ->
-            Clock.incrementYear() for [0...Bird.pairingAge]
+            Clock.incrementYear() for [0...ModelParameters.pairingAge]
           Then "the bird should be able to mate", ->
             bird.canMate().should.be.true
 
@@ -181,7 +182,7 @@ Feature "Birds",
           Given "I construct a bird with no birth year", ->
             bird = new Bird()
           When "I increment the clock 'pairingAge'-1 years", ->
-            Clock.incrementYear() for [0...Bird.pairingAge-1]
+            Clock.incrementYear() for [0...ModelParameters.pairingAge-1]
           Then "the bird should be able to mate", ->
             bird.canMate().should.be.false
 

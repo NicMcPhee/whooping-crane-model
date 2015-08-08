@@ -1,0 +1,18 @@
+###
+
+Place to store the different model parameters.
+
+https://github.com/NicMcPhee/whooping-crane-model
+
+Copyright (c) 2015 Nic McPhee
+Licensed under the MIT license.
+
+###
+
+'use strict'
+
+class ModelParameters
+  @pairingAge: 4
+  @nestingProbability: 0.5
+
+module.exports = ModelParameters
