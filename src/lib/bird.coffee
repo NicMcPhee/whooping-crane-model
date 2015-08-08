@@ -18,7 +18,7 @@ class Bird
   @uuidFactory: require('uuid')
   # @pairingAge: 4
   # @nestingProbability: 0.5
-  @collectionProbability: 0.5
+  # @collectionProbability: 0.5
   @releaseCount: 6
   @eggConversionRate: 0.5 # Unclear if we have the right number here
   @mutationRate: 0.001 # From the bat modeling paper

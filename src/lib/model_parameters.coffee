@@ -14,5 +14,6 @@ Licensed under the MIT license.
 class ModelParameters
   @pairingAge: 4
   @nestingProbability: 0.5
+  @collectionProbability: 0.5
 
 module.exports = ModelParameters

@@ -48,7 +48,7 @@ class Nesting
   collectEggs: () ->
     earlyNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.EARLY)
     shuffle(earlyNests)
-    numToCollect = Math.floor(earlyNests.length * Bird.collectionProbability)
+    numToCollect = Math.floor(earlyNests.length * ModelParameters.collectionProbability)
     @_collectedNests = earlyNests[0...numToCollect]
     @_activeNests = @_activeNests.filter((n) => n not in @_collectedNests)
     # Only some collected eggs will be released back into the wild.

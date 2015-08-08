@@ -46,6 +46,8 @@ class RickshawStripChart
     ModelParameters.pairingAge = pairingAge
     nestingProbability = Number($("#nesting_probability").val())
     ModelParameters.nestingProbability = nestingProbability
+    collectionProbability = Number($("#collection_probability").val())
+    ModelParameters.collectionProbability = collectionProbability
     @values.length = 0
     @runNumber = 0
     @hasStarted = true
