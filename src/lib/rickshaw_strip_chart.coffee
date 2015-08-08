@@ -52,6 +52,8 @@ class RickshawStripChart
     ModelParameters.releaseCount = releaseCount
     eggConversionRate = Number($("#egg_conversion_rate").val())
     ModelParameters.eggConversionRate = eggConversionRate
+    mutationRate = Number($("#mutation_rate").val())
+    ModelParameters.mutationRate = mutationRate
     @values.length = 0
     @runNumber = 0
     @hasStarted = true

@@ -382,7 +382,7 @@ Feature "Nesting",
               0.5 * expectedNumBirds)
           And "almost all of them will be late nesters", ->
             lateNesters = newBirds.filter((b) -> b.isLate())
-            expectedLate = expectedNumBirds * (1 - Bird.mutationRate)
+            expectedLate = expectedNumBirds * (1 - ModelParameters.mutationRate)
             lateNesters.length.should.be.approximately(expectedLate,
               expectedLate * 0.5)
 
@@ -412,7 +412,7 @@ Feature "Nesting",
               0.5 * expectedNumBirds)
           And "almost all of them will be early nesters", ->
             earlyNesters = newBirds.filter((b) -> b.isEarly())
-            expectedEarly = expectedNumBirds * (1 - Bird.mutationRate)
+            expectedEarly = expectedNumBirds * (1 - ModelParameters.mutationRate)
             earlyNesters.length.should.be.approximately(expectedEarly,
               expectedEarly * 0.5)
 
@@ -444,7 +444,7 @@ Feature "Nesting",
               0.5 * expectedNumBirds)
           And "almost all of them will be early nesters", ->
             earlyNesters = newBirds.filter((b) -> b.isEarly())
-            expectedEarly = expectedNumBirds * (1 - Bird.mutationRate)
+            expectedEarly = expectedNumBirds * (1 - ModelParameters.mutationRate)
             earlyNesters.length.should.be.approximately(expectedEarly,
               expectedEarly * 0.5)
 

@@ -247,7 +247,7 @@ Feature "Birds",
           Then "most of those birds also prefers early nesting", ->
             earlyNesters =
               babies.filter((b) -> b.nestingPreference() == Bird.EARLY)
-            expectedEarly = numTrials * (1 - Bird.mutationRate)
+            expectedEarly = numTrials * (1 - ModelParameters.mutationRate)
             earlyNesters.length.should.be.approximately expectedEarly,
               expectedEarly * 0.33
 
@@ -268,7 +268,7 @@ Feature "Birds",
           Then "most of those birds also prefer late nesting", ->
             lateNesters =
               babies.filter((b) -> b.nestingPreference() == Bird.LATE)
-            expectedLate = numTrials * (1 - Bird.mutationRate)
+            expectedLate = numTrials * (1 - ModelParameters.mutationRate)
             lateNesters.length.should.be.approximately expectedLate,
               expectedLate * 0.33
 

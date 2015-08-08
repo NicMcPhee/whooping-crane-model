@@ -17,5 +17,6 @@ class ModelParameters
   @collectionProbability: 0.5
   @releaseCount: 6
   @eggConversionRate: 0.5
+  @mutationRate: 0.001
 
 module.exports = ModelParameters

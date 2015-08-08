@@ -21,7 +21,7 @@ class Bird
   # @collectionProbability: 0.5
   # @releaseCount: 6
   # @eggConversionRate: 0.5 # Unclear if we have the right number here
-  @mutationRate: 0.001 # From the bat modeling paper
+  # @mutationRate: 0.001 # From the bat modeling paper
   @firstYearMortalityRate: 0.6
   @matureMortalityRate: 0.1
 
@@ -43,7 +43,7 @@ class Bird
     secondParent = nest.builders()[1]
     if firstParent.nestingPreference() == secondParent.nestingPreference()
       babyPreference = firstParent.nestingPreference()
-      if Math.random() < Bird.mutationRate
+      if Math.random() < ModelParameters.mutationRate
         babyPreference = Bird.flip(babyPreference)
     else if Math.random() < 0.5
       babyPreference = Bird.EARLY
