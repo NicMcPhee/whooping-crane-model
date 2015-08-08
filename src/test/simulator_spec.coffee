@@ -161,7 +161,7 @@ Feature "Simulation",
       numInitialNests = numInitialBirds // 2
       simulator = null
       expectedNumNewBirds =
-        numInitialNests * ModelParameters.nestingProbability * Bird.eggConversionRate
+        numInitialNests * ModelParameters.nestingProbability * ModelParameters.eggConversionRate
       expectedSurvivingNewBirds =
         expectedNumNewBirds * (1 - Bird.firstYearMortalityRate)
       expectedMortality =

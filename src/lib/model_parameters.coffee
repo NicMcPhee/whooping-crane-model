@@ -16,5 +16,6 @@ class ModelParameters
   @nestingProbability: 0.5
   @collectionProbability: 0.5
   @releaseCount: 6
+  @eggConversionRate: 0.5
 
 module.exports = ModelParameters

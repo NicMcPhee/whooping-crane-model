@@ -50,6 +50,8 @@ class RickshawStripChart
     ModelParameters.collectionProbability = collectionProbability
     releaseCount = Number($("#release_count").val())
     ModelParameters.releaseCount = releaseCount
+    eggConversionRate = Number($("#egg_conversion_rate").val())
+    ModelParameters.eggConversionRate = eggConversionRate
     @values.length = 0
     @runNumber = 0
     @hasStarted = true

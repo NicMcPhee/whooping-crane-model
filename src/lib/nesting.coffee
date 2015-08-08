@@ -65,7 +65,7 @@ class Nesting
 
   hatchEggs: () ->
     hatchedWildNests = @_activeNests.filter(
-      (n) -> Math.random() < Bird.eggConversionRate)
+      (n) -> Math.random() < ModelParameters.eggConversionRate)
     newWildBirds = @hatchNests(Bird.WILD_REARED, hatchedWildNests)
     newCaptiveBirds = @hatchNests(Bird.CAPTIVE_REARED, @._releasedNests)
     newWildBirds.concat(newCaptiveBirds)
