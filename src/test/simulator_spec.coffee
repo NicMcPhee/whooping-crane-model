@@ -2,6 +2,7 @@
 
 require 'mocha-cakes'
 
+ModelParameters = require '../lib/model_parameters'
 Clock = require '../lib/clock'
 Bird = require '../lib/bird'
 Nesting = require '../lib/nesting'
@@ -76,7 +77,7 @@ Feature "Simulation",
 
       numInitialBirds = 200
       simulator = null
-      expectedMortality = numInitialBirds * Bird.matureMortalityRate
+      expectedMortality = numInitialBirds * ModelParameters.matureMortalityRate
       expectedNewPopSize = numInitialBirds - expectedMortality
 
       Given "I construct a population of #{numInitialBirds} \
@@ -109,15 +110,15 @@ Feature "Simulation",
       simulator = null
       expectedNumNewBirds = 6
       expectedSurvivingNewBirds =
-        expectedNumNewBirds * (1 - Bird.firstYearMortalityRate)
+        expectedNumNewBirds * (1 - ModelParameters.firstYearMortalityRate)
       expectedMortality =
-        expectedNumNewBirds * Bird.firstYearMortalityRate +
-        numInitialBirds * Bird.matureMortalityRate
+        expectedNumNewBirds * ModelParameters.firstYearMortalityRate +
+        numInitialBirds * ModelParameters.matureMortalityRate
       expectedNewPopSize =
         numInitialBirds + expectedNumNewBirds - expectedMortality
       brokenNestProbability =
-        Bird.matureMortalityRate +
-        (1 - Bird.matureMortalityRate) * Bird.matureMortalityRate
+        ModelParameters.matureMortalityRate +
+        (1 - ModelParameters.matureMortalityRate) * ModelParameters.matureMortalityRate
       expectedBrokenNests = numInitialNests * brokenNestProbability
       expectedRemainingNests = numInitialNests - expectedBrokenNests
       expectedUnpairedBirds = expectedSurvivingNewBirds + expectedBrokenNests
@@ -127,13 +128,13 @@ Feature "Simulation",
         population = new Population(0)
         population.addBird(new Bird(Bird.EARLY)) for [0...numInitialBirds]
         simulator = new Simulator(population)
-      And "I advance the clock #{Bird.pairingAge} years", ->
-        Clock.setYear(Bird.pairingAge)
-        Clock.currentYear.should.eql Bird.pairingAge
+      And "I advance the clock #{ModelParameters.pairingAge} years", ->
+        Clock.setYear(ModelParameters.pairingAge)
+        Clock.currentYear.should.eql ModelParameters.pairingAge
       When "I run the simulation for one year", ->
         simulator.advanceOneYear()
       Then "the clock has advanced a year", ->
-        Clock.currentYear.should.eql (Bird.pairingAge+1)
+        Clock.currentYear.should.eql (ModelParameters.pairingAge+1)
       And "the population size is approximately #{expectedNewPopSize}", ->
         population = simulator.getPopulation()
         population.birds().length.should.be.approximately expectedNewPopSize,
@@ -160,17 +161,17 @@ Feature "Simulation",
       numInitialNests = numInitialBirds // 2
       simulator = null
       expectedNumNewBirds =
-        numInitialNests * Bird.nestingProbability * Bird.eggConversionRate
+        numInitialNests * ModelParameters.nestingProbability * ModelParameters.eggConversionRate
       expectedSurvivingNewBirds =
-        expectedNumNewBirds * (1 - Bird.firstYearMortalityRate)
+        expectedNumNewBirds * (1 - ModelParameters.firstYearMortalityRate)
       expectedMortality =
-        expectedNumNewBirds * Bird.firstYearMortalityRate +
-        numInitialBirds * Bird.matureMortalityRate
+        expectedNumNewBirds * ModelParameters.firstYearMortalityRate +
+        numInitialBirds * ModelParameters.matureMortalityRate
       expectedNewPopSize =
         numInitialBirds + expectedNumNewBirds - expectedMortality
       brokenNestProbability =
-        Bird.matureMortalityRate +
-        (1 - Bird.matureMortalityRate) * Bird.matureMortalityRate
+        ModelParameters.matureMortalityRate +
+        (1 - ModelParameters.matureMortalityRate) * ModelParameters.matureMortalityRate
       expectedBrokenNests = numInitialNests * brokenNestProbability
       expectedRemainingNests = numInitialNests - expectedBrokenNests
       expectedUnpairedBirds = expectedSurvivingNewBirds + expectedBrokenNests
@@ -180,13 +181,13 @@ Feature "Simulation",
         population = new Population(0)
         population.addBird(new Bird(Bird.LATE)) for [0...numInitialBirds]
         simulator = new Simulator(population)
-      And "I advance the clock #{Bird.pairingAge} years", ->
-        Clock.setYear(Bird.pairingAge)
-        Clock.currentYear.should.eql Bird.pairingAge
+      And "I advance the clock #{ModelParameters.pairingAge} years", ->
+        Clock.setYear(ModelParameters.pairingAge)
+        Clock.currentYear.should.eql ModelParameters.pairingAge
       When "I run the simulation for one year", ->
         simulator.advanceOneYear()
       Then "the clock has advanced a year", ->
-        Clock.currentYear.should.eql (Bird.pairingAge+1)
+        Clock.currentYear.should.eql (ModelParameters.pairingAge+1)
       And "the population size is approximately #{expectedNewPopSize}", ->
         population = simulator.getPopulation()
         population.birds().length.should.be.approximately expectedNewPopSize,

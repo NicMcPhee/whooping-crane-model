@@ -11,8 +11,9 @@ Licensed under the MIT license.
 
 'use strict'
 
-Bird = require '../lib/bird'
-Nest = require '../lib/nest'
+ModelParameters = require './model_parameters'
+Bird = require './bird'
+Nest = require './nest'
 
 # Move shuffle, chunk to a util file
 
@@ -30,7 +31,7 @@ class Nesting
 
   constructor: (matingPairs) ->
     nestingPairs = matingPairs.filter(
-      (pr) -> Math.random() < Bird.nestingProbability)
+      (pr) -> Math.random() < ModelParameters.nestingProbability)
     @_activeNests = (new Nest(p) for p in nestingPairs)
     @_collectedNests = []
     @_releasedNests = []
@@ -47,11 +48,11 @@ class Nesting
   collectEggs: () ->
     earlyNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.EARLY)
     shuffle(earlyNests)
-    numToCollect = Math.floor(earlyNests.length * Bird.collectionProbability)
+    numToCollect = Math.floor(earlyNests.length * ModelParameters.collectionProbability)
     @_collectedNests = earlyNests[0...numToCollect]
     @_activeNests = @_activeNests.filter((n) => n not in @_collectedNests)
     # Only some collected eggs will be released back into the wild.
-    @_releasedNests = @_collectedNests[0...Bird.releaseCount]
+    @_releasedNests = @_collectedNests[0...ModelParameters.releaseCount]
 
   abandonNests: () ->
     @_abandonedNests = @_activeNests.filter(
@@ -64,7 +65,7 @@ class Nesting
 
   hatchEggs: () ->
     hatchedWildNests = @_activeNests.filter(
-      (n) -> Math.random() < Bird.eggConversionRate)
+      (n) -> Math.random() < ModelParameters.eggConversionRate)
     newWildBirds = @hatchNests(Bird.WILD_REARED, hatchedWildNests)
     newCaptiveBirds = @hatchNests(Bird.CAPTIVE_REARED, @._releasedNests)
     newWildBirds.concat(newCaptiveBirds)

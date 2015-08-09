@@ -2,6 +2,7 @@
 
 require 'mocha-cakes'
 
+ModelParameters = require '../lib/model_parameters'
 Clock = require '../lib/clock'
 Nest = require '../lib/nest'
 Bird = require '../lib/bird'
@@ -163,7 +164,7 @@ Feature "Birds",
           Given "I construct a bird with no birth year", ->
             bird = new Bird()
           When "I increment the clock 'pairingAge'+1 years", ->
-            Clock.incrementYear() for [0...Bird.pairingAge+1]
+            Clock.incrementYear() for [0...ModelParameters.pairingAge+1]
           Then "the bird should be able to mate", ->
             bird.canMate().should.be.true
 
@@ -172,7 +173,7 @@ Feature "Birds",
           Given "I construct a bird with no birth year", ->
             bird = new Bird()
           When "I increment the clock 'pairingAge' years", ->
-            Clock.incrementYear() for [0...Bird.pairingAge]
+            Clock.incrementYear() for [0...ModelParameters.pairingAge]
           Then "the bird should be able to mate", ->
             bird.canMate().should.be.true
 
@@ -181,7 +182,7 @@ Feature "Birds",
           Given "I construct a bird with no birth year", ->
             bird = new Bird()
           When "I increment the clock 'pairingAge'-1 years", ->
-            Clock.incrementYear() for [0...Bird.pairingAge-1]
+            Clock.incrementYear() for [0...ModelParameters.pairingAge-1]
           Then "the bird should be able to mate", ->
             bird.canMate().should.be.false
 
@@ -246,7 +247,7 @@ Feature "Birds",
           Then "most of those birds also prefers early nesting", ->
             earlyNesters =
               babies.filter((b) -> b.nestingPreference() == Bird.EARLY)
-            expectedEarly = numTrials * (1 - Bird.mutationRate)
+            expectedEarly = numTrials * (1 - ModelParameters.mutationRate)
             earlyNesters.length.should.be.approximately expectedEarly,
               expectedEarly * 0.33
 
@@ -267,7 +268,7 @@ Feature "Birds",
           Then "most of those birds also prefer late nesting", ->
             lateNesters =
               babies.filter((b) -> b.nestingPreference() == Bird.LATE)
-            expectedLate = numTrials * (1 - Bird.mutationRate)
+            expectedLate = numTrials * (1 - ModelParameters.mutationRate)
             lateNesters.length.should.be.approximately expectedLate,
               expectedLate * 0.33
 
@@ -303,7 +304,7 @@ Feature "Birds",
 
         Scenario "Mortality on newborn birds", ->
           numBirds = 100
-          expectedSurvivors = numBirds * (1 - Bird.firstYearMortalityRate)
+          expectedSurvivors = numBirds * (1 - ModelParameters.firstYearMortalityRate)
           birds = null
           survivors = null
 
@@ -317,7 +318,7 @@ Feature "Birds",
 
         Scenario "Mortality on mature birds", ->
           numBirds = 100
-          expectedSurvivors = numBirds * (1 - Bird.matureMortalityRate)
+          expectedSurvivors = numBirds * (1 - ModelParameters.matureMortalityRate)
           birds = null
           survivors = null
 

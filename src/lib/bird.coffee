@@ -11,18 +11,19 @@ Licensed under the MIT license.
 
 'use strict'
 
+ModelParameters = require './model_parameters'
 Clock = require './clock'
 
 class Bird
   @uuidFactory: require('uuid')
-  @pairingAge: 4
-  @nestingProbability: 0.5
-  @collectionProbability: 0.5
-  @releaseCount: 6
-  @eggConversionRate: 0.5 # Unclear if we have the right number here
-  @mutationRate: 0.001 # From the bat modeling paper
-  @firstYearMortalityRate: 0.6
-  @matureMortalityRate: 0.1
+  # @pairingAge: 4
+  # @nestingProbability: 0.5
+  # @collectionProbability: 0.5
+  # @releaseCount: 6
+  # @eggConversionRate: 0.5 # Unclear if we have the right number here
+  # @mutationRate: 0.001 # From the bat modeling paper
+  # @firstYearMortalityRate: 0.6
+  # @matureMortalityRate: 0.1
 
   @EARLY = 0
   @LATE = 1
@@ -42,7 +43,7 @@ class Bird
     secondParent = nest.builders()[1]
     if firstParent.nestingPreference() == secondParent.nestingPreference()
       babyPreference = firstParent.nestingPreference()
-      if Math.random() < Bird.mutationRate
+      if Math.random() < ModelParameters.mutationRate
         babyPreference = Bird.flip(babyPreference)
     else if Math.random() < 0.5
       babyPreference = Bird.EARLY
@@ -52,7 +53,7 @@ class Bird
 
   age: -> Clock.currentYear - @birthYear
 
-  canMate: -> @age() >= Bird.pairingAge
+  canMate: -> @age() >= ModelParameters.pairingAge
 
   nestingPreference: -> @_nestingPreference
 
@@ -73,8 +74,8 @@ class Bird
       Bird.EARLY
 
   survives: ->
-    mortality = Bird.matureMortalityRate
-    if @age() == 0 then mortality = Bird.firstYearMortalityRate
+    mortality = ModelParameters.matureMortalityRate
+    if @age() == 0 then mortality = ModelParameters.firstYearMortalityRate
     Math.random() >= mortality
 
 module.exports = Bird

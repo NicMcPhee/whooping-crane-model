@@ -2,6 +2,7 @@
 
 require 'mocha-cakes'
 
+ModelParameters = require '../lib/model_parameters'
 Clock = require '../lib/clock'
 Bird = require '../lib/bird'
 Population = require '../lib/population'
@@ -160,8 +161,8 @@ Feature "Populations",
 
           Given "I construct a population of #{numBirds} birds", ->
             population = new Population(numBirds)
-          And "I set the clock ahead #{Bird.pairingAge} years", ->
-            Clock.currentYear = Bird.pairingAge
+          And "I set the clock ahead #{ModelParameters.pairingAge} years", ->
+            Clock.currentYear = ModelParameters.pairingAge
           When "I pair unpaired birds", ->
             population.mateUnpairedBirds()
           Then "Everyone should be paired", ->
@@ -176,8 +177,8 @@ Feature "Populations",
 
           Given "I construct a population of #{numBirds} birds", ->
             population = new Population(numBirds)
-          And "I set the clock ahead #{Bird.pairingAge} years", ->
-            Clock.currentYear = Bird.pairingAge
+          And "I set the clock ahead #{ModelParameters.pairingAge} years", ->
+            Clock.currentYear = ModelParameters.pairingAge
           When "I pair unpaired birds", ->
             population.mateUnpairedBirds()
           Then "All but one should be paired", ->
@@ -194,14 +195,14 @@ Feature "Populations",
 
           Given "I construct a population of #{numOldBirds} birds", ->
             population = new Population(numOldBirds)
-          And "I set the clock ahead #{Bird.pairingAge} years", ->
-            Clock.currentYear = Bird.pairingAge
+          And "I set the clock ahead #{ModelParameters.pairingAge} years", ->
+            Clock.currentYear = ModelParameters.pairingAge
           And "I pair unpaired birds", ->
             population.mateUnpairedBirds()
           And "I add #{numNewBirds} new birds", ->
             population.addBird() for [0...numNewBirds]
-          And "I advance the clock another #{Bird.pairingAge} years", ->
-            Clock.currentYear += Bird.pairingAge
+          And "I advance the clock another #{ModelParameters.pairingAge} years", ->
+            Clock.currentYear += ModelParameters.pairingAge
           When "I pair unpaired birds", ->
             population.mateUnpairedBirds()
           Then "All should be paired", ->
@@ -225,8 +226,8 @@ Feature "Populations",
             population = new Population(numOldBirds)
           Then "The number of birds is #{numOldBirds}", ->
             population.birds().length.should.eql numOldBirds
-          Given "I set the clock ahead #{Bird.pairingAge} years", ->
-            Clock.currentYear = Bird.pairingAge
+          Given "I set the clock ahead #{ModelParameters.pairingAge} years", ->
+            Clock.currentYear = ModelParameters.pairingAge
           And "I pair unpaired birds", ->
             population.mateUnpairedBirds()
           Then "The number of birds is #{numOldBirds}", ->
@@ -235,8 +236,8 @@ Feature "Populations",
             population.addBird() for [0...numNewBirds]
           Then "The number of birds is #{totalBirds}", ->
             population.birds().length.should.eql totalBirds
-          Given "I advance the clock another #{Bird.pairingAge} years", ->
-            Clock.currentYear += Bird.pairingAge
+          Given "I advance the clock another #{ModelParameters.pairingAge} years", ->
+            Clock.currentYear += ModelParameters.pairingAge
           When "I pair unpaired birds", ->
             population.mateUnpairedBirds()
           Then "All should be paired", ->
@@ -255,7 +256,7 @@ Feature "Populations",
 
           population = null
           numBirds = 101
-          deceasedBirds = numBirds * Bird.firstYearMortalityRate
+          deceasedBirds = numBirds * ModelParameters.firstYearMortalityRate
           remainingBirds = numBirds - deceasedBirds
 
           Given "I construct a population of #{numBirds} birds", ->
@@ -283,7 +284,7 @@ Feature "Populations",
 
           population = null
           numBirds = 101
-          deceasedBirds = numBirds * Bird.matureMortalityRate
+          deceasedBirds = numBirds * ModelParameters.matureMortalityRate
           remainingBirds = numBirds - deceasedBirds
 
           Given "I construct a population of #{numBirds} birds", ->
@@ -316,18 +317,18 @@ Feature "Populations",
 
           population = null
           numBirds = 101
-          deceasedBirds = numBirds * Bird.matureMortalityRate
+          deceasedBirds = numBirds * ModelParameters.matureMortalityRate
           remainingBirds = numBirds - deceasedBirds
           nestMortality =
-            Bird.matureMortalityRate +
-            (1 - Bird.matureMortalityRate) * Bird.matureMortalityRate
+            ModelParameters.matureMortalityRate +
+            (1 - ModelParameters.matureMortalityRate) * ModelParameters.matureMortalityRate
           expectedPairs = (numBirds // 2) * (1 - nestMortality)
           expectedSingles = 1 + (numBirds // 2) * nestMortality
 
           Given "I construct a population of #{numBirds} birds", ->
             population = new Population(numBirds)
-          And "I advance the clock #{Bird.pairingAge} years", ->
-            Clock.setYear(Bird.pairingAge)
+          And "I advance the clock #{ModelParameters.pairingAge} years", ->
+            Clock.setYear(ModelParameters.pairingAge)
           And "I pair the unpaired birds", ->
             population.mateUnpairedBirds()
           When "I run a mortality pass", ->
