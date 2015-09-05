@@ -1,0 +1,76 @@
+<html>
+<head>
+  <title>Whooping crane simulation</title>
+
+  <link href="node_modules/rickshaw/rickshaw.css"
+        rel="stylesheet" type="text/css">
+
+  <link href="out/css/main.css"
+        rel="stylesheet" type="text/css">
+
+</head>
+<body>
+  <div id="title">
+    <h1>Whooping crane simulation</h1>
+  </div>
+
+  <div id="chart"></div>
+
+  <div id="settings">
+    <p>Initial number of cranes
+      <input id="num_cranes" type="text" value="100">
+    </p>
+    <p>Pairing age (years)
+      <input id="pairing_age" type="text" value="4">
+    </p>
+    <p>Nesting probability (per year)
+      <input id="nesting_probability" type="text" value="0.5">
+    </p>
+    <p>Collection probability (per <strong>early</strong> nest, per year)
+      <input id="collection_probability" type="text" value="0.5">
+    </p>
+    <p>Release count (per year)
+      <input id="release_count" type="text" value="6">
+    </p>
+    <p>Egg conversion rate (probability that a wild egg will fledge)
+      <input id="egg_conversion_rate" type="text" value="0.5">
+    </p>
+    <p>Mutation rate (probability from switching between early and late nester)
+      <input id="mutation_rate" type="text" value="0.001">
+    </p>
+    <p>First year mortality probability (per year)
+      <input id="first_year_mortality_rate" type="text" value="0.6">
+    </p>
+    <p>Mature mortality probability (per year)
+      <input id="mature_mortality_rate" type="text" value="0.1">
+    </p>
+    <!-- <p>Percentage of eggs to take
+      <input id="percentage_eggs_to_take" type="text" value="0.5">
+    </p>
+    <p>Captive egg survival
+      <input id="captive_egg_survival" type="text" value="0.3">
+    </p>
+    <p>Wild egg survival
+      <input id="wild_egg_survival" type="text" value="0.05">
+    </p>
+    <p>Overall mortality rate
+      <input id="overall_mortality_rate" type="text" value="0.18">
+    </p> -->
+    <p>
+      <button id="start_button">Start!</button>
+    </p>
+  </div>
+
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/d3/d3.min.js" charset="utf-8"></script>
+  <script src="node_modules/rickshaw/rickshaw.js"></script>
+  <!--
+  <script src="out/lib/rickshaw_strip_chart.js"></script>
+-->
+  <script src="dist/cranes.js"></script>
+
+  <script type="text/javascript">
+    new RickshawStripChart();
+  </script>
+</body>
+</html>
