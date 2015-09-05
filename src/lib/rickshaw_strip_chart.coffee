@@ -71,7 +71,7 @@ class RickshawStripChart
       height: 300
       renderer: 'line'
       series: @values
-      min: -50 # 'auto'
+      min: 'auto'
     })
     xAxis = new Rickshaw.Graph.Axis.X({
       graph: @chart
@@ -83,12 +83,6 @@ class RickshawStripChart
       graph: @chart
       xFormatter: (year) -> "Year #{year}"
       yFormatter: (numCranes) -> "#{Math.round(numCranes)} cranes"
-    })
-    x_axis = new Rickshaw.Graph.Axis.X({
-      graph: @chart
-    })
-    y_axis = new Rickshaw.Graph.Axis.Y({
-      graph: @chart
     })
 
   drawChart: ->
