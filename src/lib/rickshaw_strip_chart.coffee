@@ -7,9 +7,7 @@ Population = require './population'
 class RickshawStripChart
   values: null
   year: new Date().getFullYear()
-  numYears: 100
   runNumber: 0
-  numRuns: 50
 
   tickLength: 1
   isRunning: false
@@ -41,6 +39,8 @@ class RickshawStripChart
       $("#start_button").text("Start")
 
   start: ->
+    @numRuns = Number($("#num_runs").val())
+    @numYears = Number($("#num_years").val())
     @initialNumCranes = Number($("#num_cranes").val())
     @proportionEarlyNesters = Number($("#prop_early_nesters").val())
     pairingAge = Number($("#pairing_age").val())
