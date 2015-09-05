@@ -42,6 +42,7 @@ class RickshawStripChart
 
   start: ->
     @initialNumCranes = Number($("#num_cranes").val())
+    @proportionEarlyNesters = Number($("#prop_early_nesters").val())
     pairingAge = Number($("#pairing_age").val())
     ModelParameters.pairingAge = pairingAge
     nestingProbability = Number($("#nesting_probability").val())
@@ -95,7 +96,7 @@ class RickshawStripChart
 
   extendData: ->
     years = [@year...(@year+@numYears)]
-    population = new Population(@initialNumCranes)
+    population = new Population(@initialNumCranes, @proportionEarlyNesters)
     simulator = new Simulator(population)
     entries = []
     for year in years

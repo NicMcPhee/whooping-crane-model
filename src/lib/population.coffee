@@ -33,9 +33,16 @@ chunk = (array, chunkSize) ->
 
 class Population
 
-  constructor: (popSize) ->
-    @_unpairedBirds = (new Bird() for [0...popSize])
+  constructor: (popSize, proportionEarlyNesters = 0.5) ->
+    @_unpairedBirds =
+      (new Bird(@nestingPreference(proportionEarlyNesters)) for [0...popSize])
     @_pairings = []
+
+  nestingPreference: (proportionEarlyNesters) ->
+    if Math.random() < proportionEarlyNesters
+      Bird.EARLY
+    else
+      Bird.LATE
 
   addBird: (bird) ->
     bird ?= new Bird()
