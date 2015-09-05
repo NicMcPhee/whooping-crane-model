@@ -11,6 +11,7 @@ Licensed under the MIT license.
 
 'use strict'
 
+ModelParameters = require './model_parameters'
 Bird = require './bird'
 
 # Move shuffle, chunk to a util file
@@ -77,6 +78,6 @@ class Population
     @_pairings = survivingPairs
 
   capToCarryingCapacity: ->
-    # Undefined
+    @mortalityPass() while @size() > ModelParameters.carryingCapacity
 
 module.exports = Population

@@ -43,6 +43,7 @@ class RickshawStripChart
     @numYears = Number($("#num_years").val())
     @initialNumCranes = Number($("#num_cranes").val())
     @proportionEarlyNesters = Number($("#prop_early_nesters").val())
+    ModelParameters.carryingCapacity = Number($("#carrying_capacity").val())
     pairingAge = Number($("#pairing_age").val())
     ModelParameters.pairingAge = pairingAge
     nestingProbability = Number($("#nesting_probability").val())
