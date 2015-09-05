@@ -107,6 +107,34 @@ class RickshawStripChart
       data: entries
       })
 
+  finalPopSizes: ->
+    runs = (v.data for v in @values)
+    finalSizes = (r.pop().y for r in runs)
+    return finalSizes
+
+  mean: (values) ->
+    return 0 if values.length is 0
+    sum = values.reduce (s,i) -> s + i
+    sum / values.length
+
+  variance: (values) ->
+    avg = @mean(values)
+    squares = (v*v for v in values)
+    avgSquares = @mean(squares)
+    return avgSquares - avg*avg
+
+  displayFinalStats: ->
+    sizes = @finalPopSizes()
+    mn = @mean(sizes)
+    vr = @variance(sizes)
+    stdev = Math.sqrt(vr)
+    statsString =
+      "<hr><p>
+       <strong>Mean population size:</strong> #{mn.toFixed(1)}, with
+       <strong>stdev:</strong> #{stdev.toFixed(2)}
+       </p><hr>"
+    document.getElementById('final_stats').innerHTML = statsString
+
   tick: =>
     @extendData()
     @drawChart()
@@ -116,6 +144,7 @@ class RickshawStripChart
       @isRunning = false
       @hasStarted = false
       $("#start_button").text("Restart")
+      @displayFinalStats()
     console.log("Run number #{@runNumber}, len vals = #{@values.length}")
     setTimeout(@tick, @tickLength) if @isRunning and @notDone
 
