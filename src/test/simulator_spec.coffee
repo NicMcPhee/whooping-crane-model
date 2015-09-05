@@ -152,7 +152,7 @@ Feature "Simulation",
       And "all newborns are captive born", ->
         population = simulator.getPopulation()
         newborns = population.birds().filter((b) -> b.age() is 0)
-        newborns.every((b) -> b.howReared() == Bird.CAPTIVE_REARED)
+        newborns.every((b) -> b.howReared().should.eql Bird.CAPTIVE_REARED)
 
     Scenario "Run one generation, all mature late nesters", ->
       before -> Clock.reset()
@@ -206,7 +206,7 @@ Feature "Simulation",
       And "all newborns are wild born", ->
         population = simulator.getPopulation()
         newborns = population.birds().filter((b) -> b.age() is 0)
-        newborns.every((b) -> b.howReared() == Bird.WILD_REARED)
+        newborns.every((b) -> b.howReared().should.eql Bird.WILD_REARED)
 
     Scenario "Smoke test of 10 generations", ->
       before -> Clock.reset()
