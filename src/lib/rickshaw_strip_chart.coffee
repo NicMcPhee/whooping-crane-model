@@ -6,7 +6,7 @@ Population = require './population'
 
 class RickshawStripChart
   values: null
-  year: 2015
+  year: new Date().getFullYear()
   numYears: 100
   runNumber: 0
   numRuns: 50
