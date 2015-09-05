@@ -118,7 +118,8 @@ Feature "Simulation",
         numInitialBirds + expectedNumNewBirds - expectedMortality
       brokenNestProbability =
         ModelParameters.matureMortalityRate +
-        (1 - ModelParameters.matureMortalityRate) * ModelParameters.matureMortalityRate
+        (1 - ModelParameters.matureMortalityRate) *
+        ModelParameters.matureMortalityRate
       expectedBrokenNests = numInitialNests * brokenNestProbability
       expectedRemainingNests = numInitialNests - expectedBrokenNests
       expectedUnpairedBirds = expectedSurvivingNewBirds + expectedBrokenNests
@@ -161,7 +162,8 @@ Feature "Simulation",
       numInitialNests = numInitialBirds // 2
       simulator = null
       expectedNumNewBirds =
-        numInitialNests * ModelParameters.nestingProbability * ModelParameters.eggConversionRate
+        numInitialNests *
+        ModelParameters.nestingProbability * ModelParameters.eggConversionRate
       expectedSurvivingNewBirds =
         expectedNumNewBirds * (1 - ModelParameters.firstYearMortalityRate)
       expectedMortality =
@@ -171,7 +173,8 @@ Feature "Simulation",
         numInitialBirds + expectedNumNewBirds - expectedMortality
       brokenNestProbability =
         ModelParameters.matureMortalityRate +
-        (1 - ModelParameters.matureMortalityRate) * ModelParameters.matureMortalityRate
+        (1 - ModelParameters.matureMortalityRate) *
+        ModelParameters.matureMortalityRate
       expectedBrokenNests = numInitialNests * brokenNestProbability
       expectedRemainingNests = numInitialNests - expectedBrokenNests
       expectedUnpairedBirds = expectedSurvivingNewBirds + expectedBrokenNests

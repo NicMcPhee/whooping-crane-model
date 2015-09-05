@@ -111,7 +111,8 @@ Feature "Nesting",
             population.mateUnpairedBirds()
           When "I construct nests from the breeding pairs", ->
             matingPairs = population.matingPairs()
-            expectedNests = ModelParameters.nestingProbability * matingPairs.length
+            expectedNests =
+              ModelParameters.nestingProbability * matingPairs.length
             nesting = new Nesting(matingPairs)
           Then "I will usually have about #{expectedNests} nests", ->
             nesting.activeNests().length.should.be.approximately(expectedNests,
@@ -271,7 +272,8 @@ Feature "Nesting",
           numLateNests = 37
           lateNests = null
           nesting = null
-          numBirds = Math.floor(numLateNests * ModelParameters.eggConversionRate)
+          numBirds =
+            Math.floor(numLateNests * ModelParameters.eggConversionRate)
           newBirds = null
 
           Given "I construct #{numLateNests} late nests", ->
@@ -294,7 +296,8 @@ Feature "Nesting",
           numEarlyNests = 37
           earlyNests = null
           nesting = null
-          numCollectedNests = numEarlyNests * ModelParameters.collectionProbability
+          numCollectedNests =
+            numEarlyNests * ModelParameters.collectionProbability
           numBirds = Math.min(ModelParameters.releaseCount, numCollectedNests)
           newBirds = null
 
@@ -320,9 +323,12 @@ Feature "Nesting",
           earlyNests = null
           lateNests = null
           nesting = null
-          numCollectedNests = numEarlyNests * ModelParameters.collectionProbability
-          numEarlyBirds = Math.min(ModelParameters.releaseCount, numCollectedNests)
-          numLateBirds = Math.floor(numLateNests * ModelParameters.eggConversionRate)
+          numCollectedNests =
+            numEarlyNests * ModelParameters.collectionProbability
+          numEarlyBirds =
+            Math.min(ModelParameters.releaseCount, numCollectedNests)
+          numLateBirds =
+            Math.floor(numLateNests * ModelParameters.eggConversionRate)
           numBirds = numEarlyBirds + numLateBirds
           newBirds = null
           numCaptiveReared = null
@@ -393,8 +399,9 @@ Feature "Nesting",
           newBirds = null
           numPairs = numInitialBirds // 2
           numNests = numPairs * ModelParameters.nestingProbability
-          expectedNumBirds = Math.min(numNests * ModelParameters.collectionProbability,
-            ModelParameters.releaseCount)
+          expectedNumBirds =
+            Math.min(numNests * ModelParameters.collectionProbability,
+                      ModelParameters.releaseCount)
 
           Given "I construct a population of #{numInitialBirds} birds", ->
             Clock.reset()
@@ -412,7 +419,8 @@ Feature "Nesting",
               0.5 * expectedNumBirds)
           And "almost all of them will be early nesters", ->
             earlyNesters = newBirds.filter((b) -> b.isEarly())
-            expectedEarly = expectedNumBirds * (1 - ModelParameters.mutationRate)
+            expectedEarly =
+              expectedNumBirds * (1 - ModelParameters.mutationRate)
             earlyNesters.length.should.be.approximately(expectedEarly,
               expectedEarly * 0.5)
 
@@ -425,8 +433,9 @@ Feature "Nesting",
           newBirds = null
           numPairs = numInitialBirds // 2
           numNests = numPairs * ModelParameters.nestingProbability
-          expectedNumBirds = Math.min(numNests * ModelParameters.collectionProbability,
-            ModelParameters.releaseCount)
+          expectedNumBirds =
+            Math.min(numNests * ModelParameters.collectionProbability,
+                      ModelParameters.releaseCount)
 
           Given "I construct a population of #{numInitialBirds} birds", ->
             Clock.reset()
@@ -444,7 +453,8 @@ Feature "Nesting",
               0.5 * expectedNumBirds)
           And "almost all of them will be early nesters", ->
             earlyNesters = newBirds.filter((b) -> b.isEarly())
-            expectedEarly = expectedNumBirds * (1 - ModelParameters.mutationRate)
+            expectedEarly =
+              expectedNumBirds * (1 - ModelParameters.mutationRate)
             earlyNesters.length.should.be.approximately(expectedEarly,
               expectedEarly * 0.5)
 
@@ -466,8 +476,9 @@ Feature "Nesting",
           numLateNests = numAllLateNests
           numEarlyNests.should.eql 75
           numLateNests.should.eql 25
-          expectedCaptiveBirds = Math.min(numNests * ModelParameters.collectionProbability,
-            ModelParameters.releaseCount)
+          expectedCaptiveBirds =
+            Math.min(numNests * ModelParameters.collectionProbability,
+                      ModelParameters.releaseCount)
           expectedCaptiveBirds.should.eql 6
           expectedWildBirds = numLateNests * ModelParameters.eggConversionRate
           expectedWildBirds.should.eql 12.5
@@ -510,7 +521,9 @@ Feature "Nesting",
             lateNesters = newBirds.filter((b) -> b.isLate())
             lateNesters.length.should.be.approximately(expectedLateNesters,
               expectedLateNesters * 0.5)
-          And "the original birds are all #{ModelParameters.pairingAge} years old", ->
-            population.birds().every((b) -> b.age().should.eql ModelParameters.pairingAge)
+          And "the original birds are all
+                #{ModelParameters.pairingAge} years old", ->
+            population.birds().every(
+              (b) -> b.age().should.eql ModelParameters.pairingAge)
           And "the new birds are all 0 years old", ->
             newBirds.every((b) -> b.age().should.eql 0)
