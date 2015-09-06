@@ -11,6 +11,7 @@ Licensed under the MIT license.
 
 'use strict'
 
+ModelParameters = require './model_parameters'
 Bird = require './bird'
 
 # Move shuffle, chunk to a util file
@@ -33,9 +34,16 @@ chunk = (array, chunkSize) ->
 
 class Population
 
-  constructor: (popSize) ->
-    @_unpairedBirds = (new Bird() for [0...popSize])
+  constructor: (popSize, proportionEarlyNesters = 0.5) ->
+    @_unpairedBirds =
+      (new Bird(@nestingPreference(proportionEarlyNesters)) for [0...popSize])
     @_pairings = []
+
+  nestingPreference: (proportionEarlyNesters) ->
+    if Math.random() < proportionEarlyNesters
+      Bird.EARLY
+    else
+      Bird.LATE
 
   addBird: (bird) ->
     bird ?= new Bird()
@@ -70,6 +78,6 @@ class Population
     @_pairings = survivingPairs
 
   capToCarryingCapacity: ->
-    # Undefined
+    @mortalityPass() while @size() > ModelParameters.carryingCapacity
 
 module.exports = Population

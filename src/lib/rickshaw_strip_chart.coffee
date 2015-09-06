@@ -6,10 +6,8 @@ Population = require './population'
 
 class RickshawStripChart
   values: null
-  year: 2015
-  numYears: 100
+  year: new Date().getFullYear()
   runNumber: 0
-  numRuns: 50
 
   tickLength: 1
   isRunning: false
@@ -41,7 +39,11 @@ class RickshawStripChart
       $("#start_button").text("Start")
 
   start: ->
+    @numRuns = Number($("#num_runs").val())
+    @numYears = Number($("#num_years").val())
     @initialNumCranes = Number($("#num_cranes").val())
+    @proportionEarlyNesters = Number($("#prop_early_nesters").val())
+    ModelParameters.carryingCapacity = Number($("#carrying_capacity").val())
     pairingAge = Number($("#pairing_age").val())
     ModelParameters.pairingAge = pairingAge
     nestingProbability = Number($("#nesting_probability").val())
@@ -70,7 +72,7 @@ class RickshawStripChart
       height: 300
       renderer: 'line'
       series: @values
-      min: -50 # 'auto'
+      min: 'auto'
     })
     xAxis = new Rickshaw.Graph.Axis.X({
       graph: @chart
@@ -83,19 +85,13 @@ class RickshawStripChart
       xFormatter: (year) -> "Year #{year}"
       yFormatter: (numCranes) -> "#{Math.round(numCranes)} cranes"
     })
-    x_axis = new Rickshaw.Graph.Axis.X({
-      graph: @chart
-    })
-    y_axis = new Rickshaw.Graph.Axis.Y({
-      graph: @chart
-    })
 
   drawChart: ->
     @chart.render()
 
   extendData: ->
     years = [@year...(@year+@numYears)]
-    population = new Population(@initialNumCranes)
+    population = new Population(@initialNumCranes, @proportionEarlyNesters)
     simulator = new Simulator(population)
     entries = []
     for year in years

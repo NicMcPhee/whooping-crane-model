@@ -17,13 +17,25 @@
   <div id="chart"></div>
 
   <div id="settings">
+    <p>Number of independent simulations to run
+      <input id="num_runs" type="text" value="50">
+    </p>
+    <p>Number of years to simulate in each run
+      <input id="num_years" type="text" value="100">
+    </p>
     <p>Initial number of cranes
       <input id="num_cranes" type="text" value="100">
+    </p>
+    <p>Initial proportion of early nesters (cranes that prefer to nest before black flies)
+      <input id="prop_early_nesters" type="text" value="0.5">
+    </p>
+    <p>Total carrying capacity (maximum number of cranes)
+      <input id="carrying_capacity" type="text" value="300">
     </p>
     <p>Pairing age (years)
       <input id="pairing_age" type="text" value="4">
     </p>
-    <p>Nesting probability (per year)
+    <p>Nesting probability for each mating pair (per year)
       <input id="nesting_probability" type="text" value="0.5">
     </p>
     <p>Collection probability (per <strong>early</strong> nest, per year)
@@ -32,30 +44,18 @@
     <p>Release count (per year)
       <input id="release_count" type="text" value="6">
     </p>
-    <p>Egg conversion rate (probability that a wild egg will fledge)
+    <p>Egg conversion rate (probability that a wild, i.e., late nest, egg will hatch and eventually fledge)
       <input id="egg_conversion_rate" type="text" value="0.5">
     </p>
-    <p>Mutation rate (probability from switching between early and late nester)
+    <p>Mutation rate (probability of switching between early and late nester)
       <input id="mutation_rate" type="text" value="0.001">
     </p>
-    <p>First year mortality probability (per year)
+    <p>First year mortality probability of wild-born chicks (per year)
       <input id="first_year_mortality_rate" type="text" value="0.6">
     </p>
     <p>Mature mortality probability (per year)
-      <input id="mature_mortality_rate" type="text" value="0.1">
+      <input id="mature_mortality_rate" type="text" value="0.05">
     </p>
-    <!-- <p>Percentage of eggs to take
-      <input id="percentage_eggs_to_take" type="text" value="0.5">
-    </p>
-    <p>Captive egg survival
-      <input id="captive_egg_survival" type="text" value="0.3">
-    </p>
-    <p>Wild egg survival
-      <input id="wild_egg_survival" type="text" value="0.05">
-    </p>
-    <p>Overall mortality rate
-      <input id="overall_mortality_rate" type="text" value="0.18">
-    </p> -->
     <p>
       <button id="start_button">Start!</button>
     </p>

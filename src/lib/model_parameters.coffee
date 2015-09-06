@@ -20,5 +20,6 @@ class ModelParameters
   @mutationRate: 0.001
   @firstYearMortalityRate: 0.6
   @matureMortalityRate: 0.1
+  @carryingCapacity: 300
 
 module.exports = ModelParameters
