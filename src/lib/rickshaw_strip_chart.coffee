@@ -52,6 +52,8 @@ class RickshawStripChart
     ModelParameters.collectionProbability = collectionProbability
     releaseCount = Number($("#release_count").val())
     ModelParameters.releaseCount = releaseCount
+    renestingProbability = Number($("#renesting_probability").val())
+    ModelParameters.renestingProbability = renestingProbability
     eggConversionRate = Number($("#egg_conversion_rate").val())
     ModelParameters.eggConversionRate = eggConversionRate
     mutationRate = Number($("#mutation_rate").val())
