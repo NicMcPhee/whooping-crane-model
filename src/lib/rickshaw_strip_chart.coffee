@@ -123,15 +123,26 @@ class RickshawStripChart
     avgSquares = @mean(squares)
     return avgSquares - avg*avg
 
+  # Assumes we're always going to do a 95% confidence interval.
+  # We'd need to have z-score lookup if we want other intervals.
+  marginOfError: (stdev, sampleSize) ->
+    # Assumes a 95% confidence interval
+    zScore = 1.96
+    return zScore * stdev / Math.sqrt(sampleSize)
+
   displayFinalStats: ->
     sizes = @finalPopSizes()
     mn = @mean(sizes)
     vr = @variance(sizes)
     stdev = Math.sqrt(vr)
+    margin = @marginOfError(stdev, sizes.length)
     statsString =
       "<hr><p>
        <strong>Mean population size:</strong> #{mn.toFixed(1)}, with
        <strong>stdev:</strong> #{stdev.toFixed(2)}
+       <br>
+       <strong>95% confidence interval</strong> for the population size
+       [#{(mn-margin).toFixed(1)}, #{(mn+margin).toFixed(1)}]
        </p><hr>"
     document.getElementById('final_stats').innerHTML = statsString
 
