@@ -102,7 +102,7 @@ Feature "Simulation",
         for b in birds
           b.age().should.eql 1
 
-    Scenario "Run one generation, all mature early nesters", ->
+    Scenario false, "Run one generation, all mature early nesters", ->
       before -> Clock.reset()
 
       numInitialBirds = 200
@@ -146,14 +146,25 @@ Feature "Simulation",
           expectedRemainingNests, 0.33 * expectedRemainingNests)
         population.unpairedBirds().length.should.be.approximately(
           expectedUnpairedBirds, 0.33 * expectedUnpairedBirds)
-      And "about #{expectedNumNewBirds} birds to have age 0", ->
+      And "about #{expectedSurvivingNewBirds} birds to have age 0", ->
         population = simulator.getPopulation()
         newborns = population.birds().filter((b) -> b.age() is 0)
         newborns.length.should.be.approximately expectedSurvivingNewBirds, 2
-      And "all newborns are captive born", ->
+      And "several newborns are captive born", ->
         population = simulator.getPopulation()
-        newborns = population.birds().filter((b) -> b.age() is 0)
-        newborns.every((b) -> b.howReared().should.eql Bird.CAPTIVE_REARED)
+        captiveNewborns = population.birds().filter(
+          (b) -> b.age() is 0 and b.isCaptive())
+        captiveNewborns.length.should.be.approximately(
+          expectedSurvivingNewBirds, 0.75 * expectedSurvivingNewBirds)
+      And "a few newborns are wild born", ->
+        population = simulator.getPopulation()
+        wildNewborns = population.birds().filter(
+          (b) -> b.age() is 0 and b.isWild())
+        expected = numInitialNests * ModelParameters.collectionProbability *
+                    ModelParameters.renestingProbability *
+                    ModelParameters.eggConversionRate *
+                    (1 - ModelParameters.firstYearMortalityRate)
+        wildNewborns.length.should.be.approximately(expected, 0.75 * expected)
 
     Scenario "Run one generation, all mature late nesters", ->
       before -> Clock.reset()

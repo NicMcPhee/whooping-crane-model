@@ -61,6 +61,11 @@ class Nesting
     @_activeNests = @_activeNests.filter(
       (n) -> n.nestingTime() is Bird.LATE)
 
+  renest: () ->
+    secondNests = @_abandonedNests.filter((n) ->
+      Math.random() < ModelParameters.renestingProbability)
+    @_activeNests = @_activeNests.concat(secondNests)
+
   hatchNests: (birdType, nests) ->
     Bird.fromNest(nest, birdType) for nest in nests
 
@@ -74,6 +79,7 @@ class Nesting
   reproductionCycle: () ->
     @collectEggs()
     @abandonNests()
+    @renest()
     @hatchEggs()
 
 module.exports = Nesting

@@ -392,7 +392,7 @@ Feature "Nesting",
             lateNesters.length.should.be.approximately(expectedLate,
               expectedLate * 0.5)
 
-        Scenario "Large initial population is all early nesters", ->
+        Scenario false, "Large initial population is all early nesters", ->
           numInitialBirds = 100
           population = new Population(0)
           nesting = null
@@ -424,7 +424,7 @@ Feature "Nesting",
             earlyNesters.length.should.be.approximately(expectedEarly,
               expectedEarly * 0.5)
 
-        Scenario "Small initial population is all early nesters", ->
+        Scenario false, "Small initial population is all early nesters", ->
           # Small enough that the expected number of birds is less than
           # ModelParameters.releaseCount
           numInitialBirds = 32
@@ -458,7 +458,7 @@ Feature "Nesting",
             earlyNesters.length.should.be.approximately(expectedEarly,
               expectedEarly * 0.5)
 
-        Scenario "Mixed initial population of early and late nesters", ->
+        Scenario false, "Mixed initial population of early and late nesters", ->
           numEarlyNesters = 200
           numLateNesters = 200
           numInitialBirds = numEarlyNesters + numLateNesters
@@ -474,22 +474,37 @@ Feature "Nesting",
           # Assumes the early wins strategy
           numEarlyNests = numAllEarlyNests + numMixedNests
           numLateNests = numAllLateNests
+          numReNests = numEarlyNests * ModelParameters.renestingProbability
           numEarlyNests.should.eql 75
           numLateNests.should.eql 25
+          numReNests.should.eql 37.5
+          numWildNests = numReNests + numLateNests
+          numWildNests.should.eql 62.5
           expectedCaptiveBirds =
             Math.min(numNests * ModelParameters.collectionProbability,
                       ModelParameters.releaseCount)
           expectedCaptiveBirds.should.eql 6
-          expectedWildBirds = numLateNests * ModelParameters.eggConversionRate
-          expectedWildBirds.should.eql 12.5
+          expectedWildBirds = numWildNests * ModelParameters.eggConversionRate
+          expectedWildBirds.should.eql 31.25
           expectedNumBirds = expectedCaptiveBirds + expectedWildBirds
-          expectedNumBirds.should.eql 18.5
-          expectedEarlyNesters = expectedCaptiveBirds *
-            (1 * 0.25 / 0.75 + 0.5 * 0.5 / 0.75)
-          expectedEarlyNesters.should.eql (2 + 2)
-          expectedLateNesters = expectedWildBirds +
-            (expectedCaptiveBirds - expectedEarlyNesters)
-          expectedLateNesters.should.eql 14.5
+          expectedNumBirds.should.eql 37.25
+          # The 2/3 comes from:
+          #   1/3 of these nests come from early-early (EE) pairs and
+          #   2/3 come from early-late (EL) pairs.
+          # All of the EE pairs generate early-nesting offspring, and
+          # 1/2 of the EL pairs generate early-nesting offspring, so we
+          # get 1/3 + (2/3)*(1/2) = 1/3 + 1/3 = 2/3 of these birds will
+          # be early nesters.
+          expectedEarlyNesters =
+            2/3 * (expectedCaptiveBirds +
+                    numReNests * ModelParameters.eggConversionRate)
+          expectedEarlyNesters.should.eql 16.5
+          # The 1/3 comes from the math above.
+          expectedLateNesters =
+            numLateNests * ModelParameters.eggConversionRate +
+            (1/3) * (expectedCaptiveBirds +
+                            numReNests * ModelParameters.eggConversionRate)
+          expectedLateNesters.should.eql 20.75
           expectedNumBirds.should.eql (expectedEarlyNesters+expectedLateNesters)
 
           population = new Population(0)
