@@ -16,6 +16,7 @@ class ModelParameters
   @nestingProbability: 0.5
   @collectionProbability: 0.5
   @releaseCount: 6
+  @renestingProbability: 0.5
   @eggConversionRate: 0.5
   @mutationRate: 0.001
   @firstYearMortalityRate: 0.6
