@@ -57,6 +57,14 @@ class Population
 
   size: -> @_unpairedBirds.length + 2*@_pairings.length
 
+  proportionLateNesters: ->
+    return 0 if @size() == 0
+    @birds().filter((b) -> b.isLate()).length / @size()
+
+  proportionWildBorn: ->
+    return 0 if @size() == 0
+    @birds().filter((b) -> b.isWild()).length / @size()
+
   mateUnpairedBirds: ->
     toMate = @_unpairedBirds.filter((b) -> b.canMate())
     if toMate.length % 2 == 1
