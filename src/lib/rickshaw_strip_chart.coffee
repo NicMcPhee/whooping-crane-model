@@ -95,8 +95,17 @@ class RickshawStripChart
     simulator = new Simulator(population)
     entries = []
     for year in years
-      popSize = simulator.getPopulation().birds().length
-      entry = { x: year, y: popSize }
+      population = simulator.getPopulation()
+      popSize = population.size()
+      proportionLateNesters = population.proportionLateNesters()
+      proportionWildBorn = population.proportionWildBorn()
+      entry = {
+        x: year
+        y: popSize
+        populationSize: popSize
+        proportionLateNesters: proportionLateNesters
+        proportionWildBorn: proportionWildBorn
+      }
       entries.push(entry)
       if popSize <= 0
         break
@@ -107,6 +116,70 @@ class RickshawStripChart
       data: entries
       })
 
+  finalPopEntries: ->
+    runs = (v.data for v in @values)
+    entries = (r.pop() for r in runs)
+    return entries
+
+  mean: (values) ->
+    return 0 if values.length is 0
+    sum = values.reduce (s,i) -> s + i
+    sum / values.length
+
+  variance: (values) ->
+    avg = @mean(values)
+    squares = (v*v for v in values)
+    avgSquares = @mean(squares)
+    return avgSquares - avg*avg
+
+  # Assumes we're always going to do a 95% confidence interval.
+  # We'd need to have z-score lookup if we want other intervals.
+  marginOfError: (stdev, sampleSize) ->
+    # Assumes a 95% confidence interval
+    zScore = 1.96
+    return zScore * stdev / Math.sqrt(sampleSize)
+
+  camelCaseToLabel: (camelCase) ->
+    withSpaces = camelCase.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase()
+    return withSpaces[0].toUpperCase() + withSpaces[1..]
+
+  computeEntryStats: (entries, stat) ->
+    values = (e[stat] for e in entries)
+    stdev = Math.sqrt(@variance(values))
+    return {
+      label: @camelCaseToLabel(stat)
+      mean: @mean(values)
+      stdev: stdev
+      margin: @marginOfError(stdev, values.length)
+    }
+
+  finalPopStats: ->
+    entries = @finalPopEntries()
+    (@computeEntryStats(entries, s) for s in [
+      'populationSize'
+      'proportionLateNesters'
+      'proportionWildBorn'
+    ])
+
+  statToString: (stat) ->
+    "<li>
+      <strong>#{stat.label} #{stat.mean.toFixed(1)}, with
+      <strong>stdev:</strong> #{stat.stdev.toFixed(2)}
+      <br>
+      <strong>95% confidence interval</strong>
+      [#{(stat.mean-stat.margin).toFixed(1)},
+       #{(stat.mean+stat.margin).toFixed(1)}]
+      </li>"
+
+  displayFinalStats: ->
+    stats = @finalPopStats()
+    statToString = @statToString
+    statsString =
+      "<hr><p><ul>" +
+      stats.reduce(((result, stat) -> result + statToString(stat)), "") +
+       "</ul></p><hr>"
+    document.getElementById('final_stats').innerHTML = statsString
+
   tick: =>
     @extendData()
     @drawChart()
@@ -116,6 +189,7 @@ class RickshawStripChart
       @isRunning = false
       @hasStarted = false
       $("#start_button").text("Restart")
+      @displayFinalStats()
     console.log("Run number #{@runNumber}, len vals = #{@values.length}")
     setTimeout(@tick, @tickLength) if @isRunning and @notDone
 
