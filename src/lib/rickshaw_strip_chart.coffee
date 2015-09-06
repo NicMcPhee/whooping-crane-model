@@ -95,8 +95,17 @@ class RickshawStripChart
     simulator = new Simulator(population)
     entries = []
     for year in years
-      popSize = simulator.getPopulation().birds().length
-      entry = { x: year, y: popSize }
+      population = simulator.getPopulation()
+      popSize = population.size()
+      proportionLateNesters = population.proportionLateNesters()
+      proportionWildBorn = population.proportionWildBorn()
+      entry = {
+        x: year
+        y: popSize
+        populationSize: popSize
+        proportionLateNesters: proportionLateNesters
+        proportionWildBorn: proportionWildBorn
+      }
       entries.push(entry)
       if popSize <= 0
         break
@@ -107,10 +116,10 @@ class RickshawStripChart
       data: entries
       })
 
-  finalPopSizes: ->
+  finalPopEntries: ->
     runs = (v.data for v in @values)
-    finalSizes = (r.pop().y for r in runs)
-    return finalSizes
+    entries = (r.pop() for r in runs)
+    return entries
 
   mean: (values) ->
     return 0 if values.length is 0
@@ -130,20 +139,45 @@ class RickshawStripChart
     zScore = 1.96
     return zScore * stdev / Math.sqrt(sampleSize)
 
+  camelCaseToLabel: (camelCase) ->
+    withSpaces = camelCase.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase()
+    return withSpaces[0].toUpperCase() + withSpaces[1..]
+
+  computeEntryStats: (entries, stat) ->
+    values = (e[stat] for e in entries)
+    stdev = Math.sqrt(@variance(values))
+    return {
+      label: @camelCaseToLabel(stat)
+      mean: @mean(values)
+      stdev: stdev
+      margin: @marginOfError(stdev, values.length)
+    }
+
+  finalPopStats: ->
+    entries = @finalPopEntries()
+    (@computeEntryStats(entries, s) for s in [
+      'populationSize'
+      'proportionLateNesters'
+      'proportionWildBorn'
+    ])
+
+  statToString: (stat) ->
+    "<li>
+      <strong>#{stat.label} #{stat.mean.toFixed(1)}, with
+      <strong>stdev:</strong> #{stat.stdev.toFixed(2)}
+      <br>
+      <strong>95% confidence interval</strong>
+      [#{(stat.mean-stat.margin).toFixed(1)},
+       #{(stat.mean+stat.margin).toFixed(1)}]
+      </li>"
+
   displayFinalStats: ->
-    sizes = @finalPopSizes()
-    mn = @mean(sizes)
-    vr = @variance(sizes)
-    stdev = Math.sqrt(vr)
-    margin = @marginOfError(stdev, sizes.length)
+    stats = @finalPopStats()
+    statToString = @statToString
     statsString =
-      "<hr><p>
-       <strong>Mean population size:</strong> #{mn.toFixed(1)}, with
-       <strong>stdev:</strong> #{stdev.toFixed(2)}
-       <br>
-       <strong>95% confidence interval</strong> for the population size
-       [#{(mn-margin).toFixed(1)}, #{(mn+margin).toFixed(1)}]
-       </p><hr>"
+      "<hr><p><ul>" +
+      stats.reduce(((result, stat) -> result + statToString(stat)), "") +
+       "</ul></p><hr>"
     document.getElementById('final_stats').innerHTML = statsString
 
   tick: =>
