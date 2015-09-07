@@ -4,6 +4,8 @@ ModelParameters = require './model_parameters'
 Simulator = require './simulator'
 Population = require './population'
 
+exportToCsv = require './csv_exporter'
+
 class RickshawStripChart
   values: null
   year: new Date().getFullYear()
@@ -27,6 +29,8 @@ class RickshawStripChart
     @buildChart()
     $("#start_button").click =>
       @toggle_running()
+    $("#download_button").click =>
+      @downloadData()
 
   toggle_running: ->
     @isRunning = not @isRunning
@@ -34,6 +38,7 @@ class RickshawStripChart
       @start()
     if @isRunning and @notDone
       $("#start_button").text("Stop")
+      $("#download_button")[0].style.visibility = "hidden"
       @tick()
     else
       $("#start_button").text("Start")
@@ -104,6 +109,7 @@ class RickshawStripChart
       entry = {
         x: year
         y: popSize
+        runNumber: @runNumber
         populationSize: popSize
         proportionLateNesters: proportionLateNesters
         proportionWildBorn: proportionWildBorn
@@ -190,9 +196,14 @@ class RickshawStripChart
     if not @notDone
       @isRunning = false
       @hasStarted = false
-      $("#start_button").text("Restart")
       @displayFinalStats()
+      $("#start_button").text("Restart")
+      console.log($("#download_button")[0])
+      $("#download_button")[0].style.visibility = "visible"
     console.log("Run number #{@runNumber}, len vals = #{@values.length}")
     setTimeout(@tick, @tickLength) if @isRunning and @notDone
+
+  downloadData: ->
+    exportToCsv("testData.csv", @values)
 
 window.RickshawStripChart = RickshawStripChart
