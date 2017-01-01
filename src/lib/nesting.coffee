@@ -62,7 +62,8 @@ class Nesting
       (n) -> n.nestingTime() is Bird.LATE)
 
   renest: () ->
-    secondNests = @_abandonedNests.filter((n) ->
+    canRenest = @_abandonedNests.concat(@_collectedNests)
+    secondNests = canRenest.filter((n) ->
       Math.random() < ModelParameters.renestingProbability)
     @_activeNests = @_activeNests.concat(secondNests)
 
