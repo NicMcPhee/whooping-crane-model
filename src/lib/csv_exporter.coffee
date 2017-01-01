@@ -1,6 +1,10 @@
 ###
 Code to export CSV data purely from the client (no need for a server).
 Export logic taken from http://stackoverflow.com/a/24922761 – thanks!
+
+We should pad runs that terminate early so every run goes out the full
+number of years. Otherwise analysis gets tricky because you have to
+figure out where the last year was for each run.
 ###
 
 'use strict'
