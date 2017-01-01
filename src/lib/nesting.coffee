@@ -52,6 +52,13 @@ class Nesting
       earlyNests.length * ModelParameters.collectionProbability)
     @_collectedNests = earlyNests[0...numToCollect]
     @_activeNests = @_activeNests.filter((n) => n not in @_collectedNests)
+    # This is sort of a hack that makes two copies of every
+    # collected nest, which models the idea of there being
+    # two eggs to collect in every collected nest. It would
+    # probably make more sense to make this a parameter, or
+    # to explicitly model the eggs (which I didn't do).
+    @_collectedNests = @_collectedNests.concat(@_collectedNests)
+    shuffle(@_collectedNests)
     # Only some collected eggs will be released back into the wild.
     @_releasedNests = @_collectedNests[0...ModelParameters.releaseCount]
 
