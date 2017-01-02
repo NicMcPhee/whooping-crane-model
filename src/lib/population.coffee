@@ -36,8 +36,13 @@ class Population
 
   constructor: (popSize, proportionEarlyNesters = 0.5) ->
     @_unpairedBirds =
-      (new Bird(@nestingPreference(proportionEarlyNesters)) for [0...popSize])
+      @makeBird(proportionEarlyNesters) for [0...popSize]
     @_pairings = []
+
+  makeBird: (proportionEarlyNesters) ->
+    bird = new Bird(@nestingPreference(proportionEarlyNesters))
+    bird.rollBackBirthYear()
+    bird
 
   nestingPreference: (proportionEarlyNesters) ->
     if Math.random() < proportionEarlyNesters

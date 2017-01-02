@@ -85,8 +85,10 @@ Feature "Populations",
             population = new Population(numBirds)
           Then "the population size should be #{numBirds}", ->
             population.size().should.eql numBirds
-          And "the birth year of every bird should be 0", ->
-            bird.birthYear.should.eql 0 for bird in population.birds()
+          And "the birth year of every bird should be #{-Bird.INITIAL_AGE}", ->
+            for bird in population.birds()
+              do (bird) ->
+                bird.birthYear.should.eql -Bird.INITIAL_AGE
           And "there should be no pairings", ->
             population.matingPairs().length.should.eql 0
 
@@ -106,7 +108,9 @@ Feature "Populations",
             population = new Population(numInitialBirds)
           And "I set the clock forward #{numYears} years", ->
             Clock.setYear(numYears)
-            (bird.age().should.eql numYears) for bird in population.birds()
+            for bird in population.birds()
+              do (bird) ->
+                bird.age().should.eql (numYears + Bird.INITIAL_AGE)
           When "I add #{numNewBirds} birds", ->
             population.addBird() for [0...numNewBirds]
           Then "I have #{numInitialBirds + numNewBirds} birds", ->
@@ -148,6 +152,8 @@ Feature "Populations",
           Given "I construct a population of #{numBirds} birds", ->
             Clock.reset()
             population = new Population(numBirds)
+          And "I set the clock back to when they were born", ->
+            Clock.setYear(-Bird.INITIAL_AGE)
           When "I pair unpaired birds", ->
             population.mateUnpairedBirds()
           Then "all the birds are still unpaired because \
@@ -263,6 +269,8 @@ Feature "Populations",
 
           Given "I construct a population of #{numBirds} birds", ->
             population = new Population(numBirds)
+          And "I set the clock back to when they were born", ->
+            Clock.setYear(-Bird.INITIAL_AGE)
           And "I advance the clock one year", ->
             Clock.incrementYear()
           And "I pair the unpaired birds", ->

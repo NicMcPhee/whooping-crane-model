@@ -16,14 +16,6 @@ Clock = require './clock'
 
 class Bird
   @uuidFactory: require('uuid')
-  # @pairingAge: 4
-  # @nestingProbability: 0.5
-  # @collectionProbability: 0.5
-  # @releaseCount: 6
-  # @eggConversionRate: 0.5 # Unclear if we have the right number here
-  # @mutationRate: 0.001 # From the bat modeling paper
-  # @firstYearMortalityRate: 0.6
-  # @matureMortalityRate: 0.1
 
   @EARLY = 0
   @LATE = 1
@@ -32,7 +24,7 @@ class Bird
   @INITIAL_AGE = ModelParameters.pairingAge + 1
 
   constructor: (@_nestingPreference, @_howReared) ->
-    @birthYear = Clock.currentYear - Bird.INITIAL_AGE
+    @birthYear = Clock.currentYear
     @uuid = Bird.uuidFactory.v4()
     @_nestingPreference ?= if Math.random() < 0.5
       Bird.EARLY
@@ -51,6 +43,9 @@ class Bird
     else
       babyPreference = Bird.LATE
     new Bird(babyPreference, howReared)
+
+  rollBackBirthYear: ->
+    @birthYear = @birthYear - Bird.INITIAL_AGE
 
   age: -> Clock.currentYear - @birthYear
 
