@@ -176,7 +176,7 @@ Feature "Simulation",
         numInitialNests *
         ModelParameters.nestingProbability * ModelParameters.eggConversionRate
       expectedSurvivingNewBirds =
-        expectedNumNewBirds * (1 - ModelParameters.firstYearMortalityRate)
+        expectedNumNewBirds # * (1 - ModelParameters.firstYearMortalityRate)
       expectedMortality =
         expectedNumNewBirds * ModelParameters.firstYearMortalityRate +
         numInitialBirds * ModelParameters.matureMortalityRate

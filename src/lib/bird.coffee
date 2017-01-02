@@ -76,7 +76,6 @@ class Bird
 
   survives: ->
     mortality = ModelParameters.matureMortalityRate
-    if @age() == 0 then mortality = ModelParameters.firstYearMortalityRate
     Math.random() >= mortality
 
 module.exports = Bird

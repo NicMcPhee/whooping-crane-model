@@ -253,34 +253,6 @@ Feature "Populations",
       "as a modeler",
       "We need birds to die with some probability", ->
 
-        Scenario "A population of only immature birds", ->
-          before -> Clock.reset()
-
-          population = null
-          numBirds = 101
-          deceasedBirds = numBirds * ModelParameters.firstYearMortalityRate
-          remainingBirds = numBirds - deceasedBirds
-
-          Given "I construct a population of #{numBirds} birds", ->
-            population = new Population(numBirds)
-          And "I pair the unpaired birds", ->
-            population.mateUnpairedBirds()
-          When "I run a mortality pass", ->
-            population.mortalityPass()
-          Then "the number of remaining birds should be lower", ->
-            birds = population.birds()
-            birds.length.should.be.below numBirds
-          And "there should be approximately #{deceasedBirds} fewer", ->
-            birds = population.birds()
-            numBirdsLeft = birds.length
-            numLostBirds = numBirds - numBirdsLeft
-            numLostBirds.should.be.approximately deceasedBirds,
-              0.33 * deceasedBirds
-          And "none are paired", ->
-            population.matingPairs().length.should.eql 0
-            birds = population.birds()
-            population.unpairedBirds().length.should.eql birds.length
-
         Scenario "A population of only one-year old birds", ->
           before -> Clock.reset()
 
