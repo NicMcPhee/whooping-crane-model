@@ -29,9 +29,10 @@ class Bird
   @LATE = 1
   @WILD_REARED = 2
   @CAPTIVE_REARED = 3
+  @INITIAL_AGE = ModelParameters.pairingAge + 1
 
   constructor: (@_nestingPreference, @_howReared) ->
-    @birthYear = Clock.currentYear
+    @birthYear = Clock.currentYear - Bird.INITIAL_AGE
     @uuid = Bird.uuidFactory.v4()
     @_nestingPreference ?= if Math.random() < 0.5
       Bird.EARLY
