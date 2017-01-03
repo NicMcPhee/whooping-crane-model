@@ -49,7 +49,7 @@ class Nesting
     earlyNests = @_activeNests.filter((n) -> n.nestingTime() is Bird.EARLY)
     shuffle(earlyNests)
     numToCollect = Math.floor(
-      earlyNests.length * ModelParameters.collectionProbability)
+      earlyNests.length * ModelParameters.collectionProbability())
     @_collectedNests = earlyNests[0...numToCollect]
     @_activeNests = @_activeNests.filter((n) => n not in @_collectedNests)
     # This is sort of a hack that makes two copies of every

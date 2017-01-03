@@ -99,12 +99,12 @@ Feature "model no release of captive raised birds",
 
     Given "I set the collection probability to 1
           (so all early nests collected)", ->
-      ModelParameters.collectionProbability = 1
+      ModelParameters.setCollectionProbability(1)
     And "I set the release count to 0 (so no captive raised birds released)", ->
       ModelParameters.releaseCount = 0
     When "I run a population for #{2*pairingAge} years", ->
       simulator.advanceOneYear() for [0...2*pairingAge]
-      ModelParameters.collectionProbability = originalCollectionProbability
+      ModelParameters.setCollectionProbability(originalCollectionProbability)
       ModelParameters.releaseCount = originalReleaseCount
     Then "all birds whose age is < #{pairingAge} should be wild raised", ->
       birds = simulator.getPopulation().birds()

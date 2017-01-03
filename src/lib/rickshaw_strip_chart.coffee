@@ -54,7 +54,7 @@ class RickshawStripChart
     nestingProbability = Number($("#nesting_probability").val())
     ModelParameters.nestingProbability = nestingProbability
     collectionProbability = Number($("#collection_probability").val())
-    ModelParameters.collectionProbability = collectionProbability
+    ModelParameters.setCollectionProbability(collectionProbability)
     releaseCount = Number($("#release_count").val())
     ModelParameters.releaseCount = releaseCount
     renestingProbability = Number($("#renesting_probability").val())

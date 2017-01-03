@@ -14,7 +14,7 @@ Licensed under the MIT license.
 class ModelParameters
   @pairingAge: 4
   @nestingProbability: 0.5
-  @collectionProbability: 0.5
+  @_collectionProbability: 0.5
   @releaseCount: 6
   @renestingProbability: 0.5
   @eggConversionRate: 0.5
@@ -22,5 +22,10 @@ class ModelParameters
   @firstYearMortalityRate: 0.6
   @matureMortalityRate: 0.1
   @carryingCapacity: 300
+
+  @collectionProbability: -> @_collectionProbability
+
+  @setCollectionProbability: (collectionProbability) ->
+    @_collectionProbability = collectionProbability
 
 module.exports = ModelParameters
