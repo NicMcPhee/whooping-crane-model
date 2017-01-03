@@ -153,8 +153,8 @@ Feature "Nesting",
           Then "I should have #{numUncollectedNests + numLateNests} \
                     active nests", ->
             nesting.activeNests().length.should.eql numActiveNests
-          And "I should have #{numCollectedNests} collected nests", ->
-            nesting.collectedNests().length.should.eql numCollectedNests
+          And "I should have #{2*numCollectedNests} collected nests", ->
+            nesting.collectedNests().length.should.eql (2*numCollectedNests)
           And "I should have #{numReleasedNests} released nests", ->
             nesting.releasedNests().length.should.eql numReleasedNests
 
@@ -219,8 +219,8 @@ Feature "Nesting",
             Then "I should have #{numUncollectedNests + numLateNests} \
                     active nests", ->
               nesting.activeNests().length.should.eql numLateNests
-            And "I should have #{numCollectedNests} collected nests", ->
-              nesting.collectedNests().length.should.eql numCollectedNests
+            And "I should have #{2*numCollectedNests} collected nests", ->
+              nesting.collectedNests().length.should.eql (2*numCollectedNests)
             And "I should have #{numReleasedNests} released nests", ->
               nesting.releasedNests().length.should.eql numReleasedNests
             And "I should have #{numEarlyNests} abandoned nests", ->
@@ -256,10 +256,10 @@ Feature "Nesting",
             Then "I should have #{numUncollectedNests + numLateNests} \
                     active nests", ->
               nesting.activeNests().length.should.eql numLateNests
-            And "I should have #{numCollectedNests} collected nests", ->
-              nesting.collectedNests().length.should.eql numCollectedNests
-            And "I should have #{numReleasedNests} released nests", ->
-              nesting.releasedNests().length.should.eql numReleasedNests
+            And "I should have #{2*numCollectedNests} collected nests", ->
+              nesting.collectedNests().length.should.eql (2*numCollectedNests)
+            And "I should have #{2*numReleasedNests} released nests", ->
+              nesting.releasedNests().length.should.eql (2*numReleasedNests)
             And "I should have #{numEarlyNests} abandoned nests", ->
               nesting.abandonedNests().length.should.eql numUncollectedNests
 

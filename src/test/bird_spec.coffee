@@ -302,21 +302,6 @@ Feature "Birds",
       "as a modeler",
       "I need to be able to have birds die off probabilistically ", ->
 
-        Scenario "Mortality on newborn birds", ->
-          numBirds = 100
-          expectedSurvivors =
-            numBirds * (1 - ModelParameters.firstYearMortalityRate)
-          birds = null
-          survivors = null
-
-          Given "I have #{numBirds} newbord birds", ->
-            birds = (new Bird() for [0...numBirds])
-          When "I run a mortality pass on them", ->
-            survivors = birds.filter((b) -> b.survives())
-          Then "about #{expectedSurvivors} should survive", ->
-            survivors.length.should.be.approximately expectedSurvivors,
-              0.33 * expectedSurvivors
-
         Scenario "Mortality on mature birds", ->
           numBirds = 100
           expectedSurvivors =
