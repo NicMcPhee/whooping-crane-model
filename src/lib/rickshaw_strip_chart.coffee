@@ -3,6 +3,7 @@
 ModelParameters = require './model_parameters'
 Simulator = require './simulator'
 Population = require './population'
+Clock = require './clock'
 
 exportToCsv = require './csv_exporter'
 
@@ -189,6 +190,7 @@ class RickshawStripChart
     document.getElementById('final_stats').innerHTML = statsString
 
   tick: =>
+    Clock.reset()
     @extendData()
     @drawChart()
     @runNumber = @runNumber + 1

@@ -11,6 +11,8 @@ Licensed under the MIT license.
 
 'use strict'
 
+Clock = require './clock'
+
 class ModelParameters
   @pairingAge: 4
   @nestingProbability: 0.5
@@ -22,10 +24,18 @@ class ModelParameters
   @firstYearMortalityRate: 0.6
   @matureMortalityRate: 0.1
   @carryingCapacity: 300
+  @clockStart: 0
 
-  @collectionProbability: -> @_collectionProbability
+  @collectionProbability: ->
+    console.log(Clock.currentYear)
+    elapsed = Clock.currentYear - @clockStart
+    if elapsed >= 100
+      0
+    else
+      @_collectionProbability * (100-elapsed) / 100.0
 
   @setCollectionProbability: (collectionProbability) ->
     @_collectionProbability = collectionProbability
+    @clockStart = Clock.currentYear
 
 module.exports = ModelParameters
