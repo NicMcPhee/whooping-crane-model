@@ -20,3 +20,5 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## License
 Copyright (c) 2015 Nic McPhee. Licensed under the MIT license.
+
+[![](http://codescene.io/projects/2433/status.svg) Get more details at **codescene.io**.](http://codescene.io/projects/2433/jobs/latest-successful/results)
